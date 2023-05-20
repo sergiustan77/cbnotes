@@ -2,8 +2,9 @@ interface Note {
   title: string;
   content: string;
   created_at: string;
+  updated_at: string;
   id: string;
-  tags: string[];
+  tags: String[];
 }
 
 export default Note;

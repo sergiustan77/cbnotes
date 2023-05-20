@@ -1,21 +1,15 @@
 "use client";
 import React from "react";
-import {
-  Card,
-  CardTitle,
-  CardHeader,
-  CardContent,
-  CardDescription,
-  CardFooter,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
+import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
+
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
-
+import { Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 
-import { driver } from "@/lib/neo4j";
+import TagsField from "./TagsField";
+import { newNote } from "@/lib/note-actions/newNote";
 
 type Props = {};
 
@@ -23,63 +17,61 @@ const NewNote = ({}: Props) => {
   const [title, setTitle] = React.useState("");
   const [content, setContent] = React.useState("");
   const { userId } = useAuth();
+  const [tags, setTags] = React.useState<String[]>([]);
 
   const router = useRouter();
 
-  const addNote = async () => {
-    const session = driver.session();
-
-    const res = await session
-      .executeWrite((tx) =>
-        tx.run(
-          `MATCH (u:User {userId: $userId})
-        CREATE (n:Note {title: $title, content: $content, id: $id, created_at: datetime({timezone: 'Europe/Bucharest'})})
-              CREATE (u)-[:HAS]->(n)
-    
-      `,
-          { userId, title, content, id: crypto.randomUUID() }
-        )
-      )
-      .then(() => {
-        router.push("/notes");
-        router.refresh();
-      });
-
-    session.close();
-  };
-
   return (
-    <div className="flex place-content-center ">
-      <Card className="w-[500px]">
-        <CardHeader>
-          <CardTitle>Add a new note</CardTitle>
-          <CardDescription>Write down your thoughts...</CardDescription>
-        </CardHeader>
-        <CardContent className="grid gap-4">
-          <Input
+    <Card className="h-fit shadow-none border-none w-full">
+      <CardHeader className="py-4 gap-2">
+        <CardTitle className="flex place-content-between scroll-m-20 text-xl font-extrabold tracking-tight md:text-4xl">
+          <Textarea
+            className="mr-4 h-auto md:h-10 resize-none"
             value={title}
             onChange={(e) => {
               setTitle(e.target.value);
             }}
             placeholder="Title"
           />
-          <Textarea
-            className="h-auto"
-            rows={20}
-            value={content}
-            onChange={(e) => {
-              setContent(e.target.value);
-            }}
-            placeholder="Set your heart ablaze!"
-          />
-        </CardContent>
-        <CardFooter className="flex place-content-end">
-          <Button onClick={addNote} size={"lg"}>
-            Save
-          </Button>
-        </CardFooter>
-      </Card>
-    </div>
+
+          <div className="flex flex-col md:flex-row gap-2 items-center">
+            <Button
+              variant={"outline"}
+              size={"icon"}
+              onClick={() => {
+                router.push("/notes");
+              }}
+            >
+              <X />
+            </Button>
+            <Button
+              variant={"default"}
+              size={"icon"}
+              onClick={() => {
+                newNote(userId as string, title, content, tags).then(() => {
+                  router.push("/notes");
+                  router.refresh();
+                });
+              }}
+            >
+              <Save />
+            </Button>
+          </div>
+        </CardTitle>
+
+        <TagsField tags={tags} setTags={setTags} />
+      </CardHeader>
+      <CardContent className="h-[75vh]">
+        <Textarea
+          className="h-full resize-none"
+          value={content}
+          onChange={(e) => {
+            setContent(e.target.value);
+          }}
+          placeholder="Set your heart ablaze!"
+        />
+      </CardContent>
+    </Card>
   );
 };
 

@@ -5,7 +5,7 @@ type Props = {};
 
 const page = (props: Props) => {
   return (
-    <div className="container mt-8">
+    <div className="container h-[90vh] mt-4">
       <NewNote />
     </div>
   );

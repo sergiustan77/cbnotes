@@ -8,16 +8,17 @@ import {
 } from "@/components/ui/card";
 
 import Link from "next/link";
+import Note from "@/lib/interfaces/Note";
 
 type Props = {
-  notes: any[];
+  notes: Note[];
 };
 
 const Notes = ({ notes }: Props) => {
   return (
     <div className="">
       <ScrollArea className=" mt-8 ">
-        <h1 className="mt-10 scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+        <h1 className="scroll-m-20 text-xl font-extrabold tracking-tight md:text-4xl">
           Notes
         </h1>
         <div className="mt-4 flex gap-4 flex-wrap">

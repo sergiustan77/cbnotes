@@ -1,11 +1,11 @@
 import { driver } from "../neo4j";
-import { auth } from "@clerk/nextjs/server";
 
 export async function updateNote(
   id: string,
   userId: string,
   title: string,
-  content: string
+  content: string,
+  tags: String[]
 ) {
   const session = driver.session();
   const res = await session.executeWrite((tx) =>
@@ -13,13 +13,11 @@ export async function updateNote(
       `MATCH (u:User {userId: $userId})-[r:HAS]-(n:Note {id: $id})
         SET n.title = $title
         SET n.content = $content
-        SET n.updated_at = datetime({timezone: 'Europe/Bucharest'})`,
-      { userId, id, title, content }
+        SET n.updated_at = datetime({timezone: 'Europe/Bucharest'})
+        SET n.tags = $tags`,
+      { userId, id, title, content, tags }
     )
   );
 
   session.close();
-  const values = res.records.map((r) => r.get("note"))[0];
-
-  return values;
 }

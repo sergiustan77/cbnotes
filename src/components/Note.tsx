@@ -1,7 +1,7 @@
 "use client";
 import Note from "@/lib/interfaces/Note";
 import React from "react";
-import { Save, Edit3 } from "lucide-react";
+import { Save, Edit3, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -14,24 +14,27 @@ import {
 
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
-import { Input } from "./ui/input";
+
 import { updateNote } from "@/lib/note-actions/updateNote";
 import { useAuth } from "@clerk/nextjs";
+import { Badge } from "./ui/badge";
+import TagsField from "./TagsField";
 
 type Props = {
   note: Note;
 };
 
 const Note = ({ note }: Props) => {
-  const date = new Date(note.created_at);
+  const date = new Date(note.updated_at);
   const [isEditing, setIsEditing] = React.useState(false);
   const [content, setContent] = React.useState(note.content);
   const [title, setTitle] = React.useState(note.title);
+  const [tags, setTags] = React.useState<String[]>(note.tags);
   const { userId } = useAuth();
   const router = useRouter();
 
   return (
-    <Card className="h-full shadow-none border-none w-full">
+    <Card className="h-fit shadow-none border-none w-full">
       <CardHeader className=" py-4 ">
         <CardDescription className=" flex place-content-between items-end text-xs md:text-sm  ">
           {date.toLocaleString("ro-RO", {
@@ -50,8 +53,8 @@ const Note = ({ note }: Props) => {
           {!isEditing ? (
             note.title
           ) : (
-            <Input
-              className="mr-4"
+            <Textarea
+              className="mr-4 h-auot md:h-10 resize-none "
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);
@@ -69,29 +72,56 @@ const Note = ({ note }: Props) => {
               <Edit3 />
             </Button>
           ) : (
-            <Button
-              size={"icon"}
-              variant={"ghost"}
-              onClick={() => {
-                updateNote(note.id, userId as string, title, content).then(
-                  () => {
+            <div className="flex flex-col md:flex-row items-center gap-2">
+              <Button
+                size={"icon"}
+                variant={"outline"}
+                onClick={() => {
+                  setIsEditing(false);
+                  setContent(note.content);
+                  setTitle(note.title);
+                }}
+              >
+                <X />
+              </Button>
+              <Button
+                size={"icon"}
+                variant={"default"}
+                onClick={() => {
+                  updateNote(
+                    note.id,
+                    userId as string,
+                    title,
+                    content,
+                    tags
+                  ).then(() => {
                     router.refresh();
                     setIsEditing(false);
-                  }
-                );
-              }}
-            >
-              <Save />
-            </Button>
+                  });
+                }}
+              >
+                <Save />
+              </Button>
+            </div>
           )}
         </CardTitle>
+
+        {!isEditing ? (
+          <div className=" flex gap-1">
+            {note.tags?.map((tag, index) => (
+              <Badge key={index}>{tag}</Badge>
+            ))}
+          </div>
+        ) : (
+          <TagsField tags={tags} setTags={setTags} />
+        )}
       </CardHeader>
       {!isEditing ? (
         <CardContent className="">{note.content}</CardContent>
       ) : (
-        <CardContent className="h-[80vh]">
+        <CardContent className="h-[75vh]">
           <Textarea
-            className="h-full"
+            className="h-full resize-none"
             value={content}
             onChange={(e) => {
               setContent(e.target.value);

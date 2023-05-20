@@ -28,7 +28,7 @@ const page = async ({}: Props) => {
   const notes = await getNotes(userId);
 
   return (
-    <div className="container mt-4 rounded-md border h-[90vh]">
+    <div className="container mt-4 rounded-md  h-[90vh]">
       <Notes notes={notes} />
     </div>
   );

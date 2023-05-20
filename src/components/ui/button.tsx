@@ -11,13 +11,12 @@ const buttonVariants = cva(
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
         destructive:
           "bg-destructive text-destructive-foreground hover:bg-destructive/90",
-        outline:
-          "border border-input hover:bg-accent hover:text-accent-foreground",
+        outline: "border border-input hover:text-accent-foreground",
         secondary:
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         iconCircle:
-          "bg-primary text-primary-foreground hover:bg-primary/90 rounded-[50%]",
+          " text-primary-foreground border grid place-items-center items-center hover:text-accent-foreground hover:bg-accent  rounded-[100%]",
 
         link: "underline-offset-4 hover:underline text-primary",
       },
@@ -28,6 +27,7 @@ const buttonVariants = cva(
         xl: "h-14 px-10 rounded-md text-xl",
         icon: "h-9 w-9 px-0 rounded-md",
         iconCircle: "h-8 w-8 px-0",
+        iconCircleSmall: "h-4 w-4 px-0",
       },
     },
     defaultVariants: {

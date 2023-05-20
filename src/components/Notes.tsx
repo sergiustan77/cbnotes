@@ -22,13 +22,22 @@ const Notes = ({ notes }: Props) => {
         </h1>
         <div className="mt-4 flex gap-4 flex-wrap">
           {notes.map((n) => (
-            <Link href={`/notes/${n.id}`}>
+            <Link key={n.id} href={`/notes/${n.id}`}>
               <Card className=" hover:border-primary  " key={n.title}>
                 <CardHeader>
                   <CardTitle>{n.title}</CardTitle>
+                  <CardDescription>
+                    {new Date(n.created_at).toLocaleString("ro-RO", {
+                      day: "numeric",
+                      month: "long",
+                      year: "numeric",
+                    })}
+                  </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription>{n.content}</CardDescription>
+                  <CardDescription className="text-xs">
+                    {n.content}
+                  </CardDescription>
                 </CardContent>
               </Card>
             </Link>

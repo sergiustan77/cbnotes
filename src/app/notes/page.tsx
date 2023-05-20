@@ -12,7 +12,7 @@ const getNotes = async (userId: any) => {
   const res = await session.executeRead((tx) =>
     tx.run(
       `MATCH (u:User {userId: $userId})-[r:HAS]-(n:Note)
-      RETURN { title: n.title, content: n.content, id: n.id } as note`,
+      RETURN { title: n.title, content: n.content, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms")  } as note`,
       { userId }
     )
   );

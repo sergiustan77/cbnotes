@@ -33,7 +33,7 @@ const NewNote = ({}: Props) => {
       .executeWrite((tx) =>
         tx.run(
           `MATCH (u:User {userId: $userId})
-        CREATE (n:Note {title: $title, content: $content, id: $id})
+        CREATE (n:Note {title: $title, content: $content, id: $id, created_at: datetime({timezone: 'Europe/Bucharest'})})
               CREATE (u)-[:HAS]->(n)
     
       `,

@@ -1,8 +1,8 @@
 interface Note {
   title: string;
   content: string;
-  date: string;
-  userID: string;
+  created_at: string;
+  id: string;
   tags: string[];
 }
 

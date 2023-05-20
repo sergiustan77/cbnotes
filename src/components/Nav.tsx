@@ -1,18 +1,18 @@
-"use client";
 import ThemeToggle from "./ui/ThemeToggle";
 import { Button, buttonVariants } from "./ui/button";
-import { useUser, SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { currentUser } from "@clerk/nextjs";
 import { PlusIcon, StickyNote } from "lucide-react";
 import Link from "next/link";
 type Props = {};
 
-const Nav = (props: Props) => {
-  const { isLoaded, isSignedIn, user } = useUser();
+const Nav = async (props: Props) => {
+  const user = await currentUser();
   return (
     <div className="flex place-content-evenly border-b p-2 ">
       <div className="flex place-items-center gap-4">
-        <ThemeToggle />
-        Hi {user?.firstName}!
+        {" "}
+        <ThemeToggle /> Hi {user?.firstName}!
       </div>
 
       <div className="">

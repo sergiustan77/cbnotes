@@ -18,10 +18,10 @@ const Page = () => {
   return (
     <div className="container mx-auto flex flex-col p-[2px] justify-center border   rounded-md mt-4 items-center h-[90vh] ">
       <div className="container bg-background flex flex-col md:flex-row justify-center items-center  gap-4 rounded-sm     h-full">
-        <div className=" container h-full relative rounded-md bg-background  flex items-center  ">
+        <div className=" relative container  h-full  rounded-md bg-background  flex items-center  ">
           <Image
             className="bg-background rounded-sm  p-4 "
-            src={"./notes.svg"}
+            src="/notes.svg"
             fill
             style={{
               objectFit: "contain",

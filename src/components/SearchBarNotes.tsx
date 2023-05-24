@@ -24,7 +24,8 @@ const SearchBar = ({ notes, tags, tagCount }: Props) => {
     return array.filter(
       (el: any) =>
         el.content.toLowerCase().includes(query.toLocaleLowerCase()) ||
-        el.title.toLowerCase().includes(query.toLocaleLowerCase())
+        el.title.toLowerCase().includes(query.toLocaleLowerCase()) ||
+        el.tags.some((t: any) => t.toLowerCase().includes(query.toLowerCase()))
     );
   };
 
@@ -37,7 +38,7 @@ const SearchBar = ({ notes, tags, tagCount }: Props) => {
   const filteredNotes = filterNoteSuggestions(notes);
   const filteredTags = filterTagSuggestions(tags);
   return (
-    <div className="my-2 flex flex-col gap-4 h-full w-full">
+    <div className="my-2 w-full flex flex-col gap-4 h-full ">
       <Label className="relative block w-full">
         <Search
           size={18}
@@ -54,16 +55,22 @@ const SearchBar = ({ notes, tags, tagCount }: Props) => {
         />
       </Label>
 
-      <ScrollArea className="">
-        <div className="flex flex-col md:flex-row md:gap-8">
-          {tags ? (
+      <div className="flex  flex-col md:flex-row gap-8">
+        {tags ? (
+          <div className="md:w-[15%] ">
             <Tags tags={filteredTags} count={filteredTags.length} />
-          ) : (
-            <h1>Loading</h1>
-          )}
-          {notes ? <Notes notes={filteredNotes} /> : <h1>Loading</h1>}
-        </div>
-      </ScrollArea>
+          </div>
+        ) : (
+          <h1>Loading</h1>
+        )}
+        {notes ? (
+          <div className="md:w-[85%] ">
+            <Notes notes={filteredNotes} />
+          </div>
+        ) : (
+          <h1>Loading</h1>
+        )}
+      </div>
     </div>
   );
 };

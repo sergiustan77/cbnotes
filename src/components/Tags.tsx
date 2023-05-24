@@ -12,20 +12,20 @@ type Props = {
 
 const Tags = ({ tags, count }: Props) => {
   return (
-    <div className="w-auto md:w-[20%]  my-2">
+    <div className="w-full  my-2">
       {tags ? (
         <div className="flex flex-col gap-2">
-          <div className="flex gap-2 items-cetner place-content-between   scroll-m-20 text-lg font-bold tracking-tight ">
-            <Badge className="flex items-center text-lg gap-1 px-3">
+          <div className="flex gap-2 mb-2 items-center place-content-between   scroll-m-20 text-md font-bold tracking-tight ">
+            <div className="flex items-center text-md gap-1 ">
               <Tag strokeWidth={3} size={18} /> <span className=" ">Tags</span>
-            </Badge>
+            </div>
             <div className="flex  items-center gap-8 text-muted-foreground">
               {count} Found
             </div>
           </div>
           {tags.length > 0 ? (
-            <ScrollArea className="border rounded-md h-24 md:h-[70vh]  my-2 ">
-              <div className="h-full p-4 flex flex-wrap gap-1">
+            <ScrollArea className="  h-min-24 md:h-auto   ">
+              <div className="h-full flex flex-wrap gap-1">
                 {tags.map((t, i) => (
                   <Link key={i} href={`/notes/tag/${t}`}>
                     <Badge>{t}</Badge>
@@ -34,7 +34,7 @@ const Tags = ({ tags, count }: Props) => {
               </div>
             </ScrollArea>
           ) : (
-            <h1 className="text-center border h-24 md:h-[70vh] p-4 rounded-md text-muted-foreground my-2 ">
+            <h1 className="text-center  min-h-24 md:h-full  text-muted-foreground my-2 ">
               No tags found
             </h1>
           )}

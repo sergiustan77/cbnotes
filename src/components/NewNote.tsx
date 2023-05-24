@@ -18,6 +18,7 @@ const NewNote = ({}: Props) => {
   const [content, setContent] = React.useState("");
   const { userId } = useAuth();
   const [tags, setTags] = React.useState<String[]>([]);
+  const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
 
   const router = useRouter();
 
@@ -59,7 +60,12 @@ const NewNote = ({}: Props) => {
           </div>
         </CardTitle>
 
-        <TagsField tags={tags} setTags={setTags} />
+        <TagsField
+          tags={tags}
+          tagsToRemove={tagsToRemove}
+          setTagsToRemove={setTagsToRemove}
+          setTags={setTags}
+        />
       </CardHeader>
       <CardContent className="h-[75vh]">
         <Textarea

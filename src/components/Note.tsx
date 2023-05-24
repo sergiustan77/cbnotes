@@ -22,14 +22,16 @@ import TagsField from "./TagsField";
 
 type Props = {
   note: Note;
+  initialTags: string[];
 };
 
-const Note = ({ note }: Props) => {
+const Note = ({ note, initialTags }: Props) => {
   const date = new Date(note.updated_at);
   const [isEditing, setIsEditing] = React.useState(false);
   const [content, setContent] = React.useState(note.content);
   const [title, setTitle] = React.useState(note.title);
-  const [tags, setTags] = React.useState<String[]>(note.tags);
+  const [tags, setTags] = React.useState<String[]>(initialTags);
+  const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
   const { userId } = useAuth();
   const router = useRouter();
 
@@ -93,7 +95,8 @@ const Note = ({ note }: Props) => {
                     userId as string,
                     title,
                     content,
-                    tags
+                    tags,
+                    tagsToRemove
                   ).then(() => {
                     router.refresh();
                     setIsEditing(false);
@@ -107,13 +110,20 @@ const Note = ({ note }: Props) => {
         </CardTitle>
 
         {!isEditing ? (
-          <div className=" flex gap-1">
-            {note.tags?.map((tag, index) => (
-              <Badge key={index}>{tag}</Badge>
-            ))}
-          </div>
+          tags && (
+            <div className=" flex gap-1">
+              {initialTags.map((tag, index) => (
+                <Badge key={index}>{tag}</Badge>
+              ))}
+            </div>
+          )
         ) : (
-          <TagsField tags={tags} setTags={setTags} />
+          <TagsField
+            tags={tags}
+            setTags={setTags}
+            tagsToRemove={tagsToRemove}
+            setTagsToRemove={setTagsToRemove}
+          />
         )}
       </CardHeader>
       {!isEditing ? (

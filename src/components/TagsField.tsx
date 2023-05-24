@@ -4,14 +4,15 @@ import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { X } from "lucide-react";
-import { ArrowFunction } from "typescript";
 
 type Props = {
+  setTagsToRemove: Function;
   setTags: Function;
   tags: String[];
+  tagsToRemove: String[];
 };
 
-const TagsField = ({ setTags, tags }: Props) => {
+const TagsField = ({ setTags, tags, setTagsToRemove, tagsToRemove }: Props) => {
   const handleKeyDown = (e: any) => {
     if (e.key !== "Enter") return;
 
@@ -26,8 +27,9 @@ const TagsField = ({ setTags, tags }: Props) => {
     e.target.value = "";
   };
 
-  const removeTag = (index: number) => {
+  const removeTag = (tag: String, index: number) => {
     setTags(tags?.filter((tag, i) => i !== index));
+    setTagsToRemove([...tagsToRemove, tag]);
   };
   return (
     <div className=" p-[0.5em] gap-[0.5em]  flex rounded-md flex-wrap items-center">
@@ -38,7 +40,7 @@ const TagsField = ({ setTags, tags }: Props) => {
         >
           <span className="text pl-1">{tag}</span>
           <Button
-            onClick={() => removeTag(index)}
+            onClick={() => removeTag(tag, index)}
             variant={"iconCircle"}
             size={"iconCircleSmall"}
             className=""

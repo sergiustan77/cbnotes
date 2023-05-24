@@ -1,35 +1,38 @@
 import React from "react";
 
 import Notes from "@/components/Notes";
-import { driver } from "@/lib/neo4j";
+
 import { auth } from "@clerk/nextjs";
+import Tags from "@/components/Tags";
+import { getNotes } from "@/lib/note-actions/getAllNotes";
+import { getTags } from "@/lib/note-actions/getTags";
+import Note from "@/lib/interfaces/Note";
+import TagsData from "@/lib/interfaces/TagsData";
+import SearchBarTags from "@/components/SearchBarTags";
+import SearchBar from "@/components/SearchBarNotes";
 
 type Props = {};
 
-const getNotes = async (userId: any) => {
-  const session = driver.session();
-
-  const res = await session.executeRead((tx) =>
-    tx.run(
-      `MATCH (u:User {userId: $userId})-[r:HAS]-(n:Note)
-      RETURN { title: n.title, content: n.content, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms")  } as note`,
-      { userId }
-    )
-  );
-
-  session.close();
-  const values = res.records.map((r) => r.get("note"));
-
-  return values;
-};
-
 const page = async ({}: Props) => {
   const { userId } = auth();
-  const notes = await getNotes(userId);
+  const notesData: Promise<Note[]> = getNotes(userId);
+  const tagsData: Promise<TagsData> = getTags(userId);
+
+  const [notes, tags] = await Promise.all([notesData, tagsData]);
 
   return (
     <div className="container mt-4 rounded-md  h-[90vh]">
-      <Notes notes={notes} />
+      <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight ">
+        Notes
+      </h1>
+      <div className="my-2 flex-row md:flex gap-12">
+        {/* <SearchBarTags data={tags.tags} count={tags.count.toString()} /> */}
+        <SearchBar
+          notes={notes}
+          tags={tags.tags}
+          tagCount={tags.count.toString()}
+        />
+      </div>
     </div>
   );
 };

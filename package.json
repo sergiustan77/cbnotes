@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^4.17.1",
+    "@radix-ui/react-label": "^2.0.1",
     "@radix-ui/react-navigation-menu": "^1.1.2",
     "@radix-ui/react-scroll-area": "^1.0.3",
     "@types/node": "18.15.5",

@@ -10,11 +10,16 @@ export async function updateNote(
   const session = driver.session();
   const res = await session.executeWrite((tx) =>
     tx.run(
-      `MATCH (u:User {userId: $userId})-[r:HAS]-(n:Note {id: $id})
+      `MATCH (u:User {userId: $userId})-[:HAS_TAG]-(:Tag)<-[:TAGGED_IN]-(n:Note {id: $id})
         SET n.title = $title
         SET n.content = $content
         SET n.updated_at = datetime({timezone: 'Europe/Bucharest'})
-        SET n.tags = $tags`,
+      WITH n, u
+        UNWIND $tags as tag_name
+      MERGE (tag:Tag {name: tag_name})
+      MERGE (u)-[:HAS_TAG]->(tag)
+      MERGE (n)-[:TAGGED_IN]->(tag)
+        `,
       { userId, id, title, content, tags }
     )
   );

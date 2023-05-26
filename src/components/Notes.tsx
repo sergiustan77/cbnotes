@@ -10,6 +10,7 @@ import {
 import Link from "next/link";
 import Note from "@/lib/interfaces/Note";
 import { Badge } from "./ui/badge";
+import HTMLToReact from "@/lib/htmlToReact";
 
 type Props = {
   notes: Note[];
@@ -45,8 +46,8 @@ const Notes = ({ notes }: Props) => {
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <CardDescription className="text-xs">
-                    {n.content}
+                  <CardDescription className="text-xs h-40 overflow-hidden text-ellipsis ">
+                    {HTMLToReact(n.content)}
                   </CardDescription>
                 </CardContent>
               </Card>

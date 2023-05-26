@@ -1,22 +1,10 @@
+"use client";
 import React from "react";
-import Notes from "@/components/Notes";
-import { sortNotes } from "@/lib/note-actions/sortNotes";
-import { auth } from "@clerk/nextjs";
+import Editor from "@/components/editor/Editor";
 
 type Props = {};
 
 const page = async (props: Props) => {
-  const { userId } = auth();
-
-  const notes = await sortNotes(userId, "title", "DESC", "DESC", [
-    "test",
-    "lala",
-  ]);
-  return (
-    <div>
-      <Notes notes={notes} />
-    </div>
-  );
+  return <div className="container"></div>;
 };
-
 export default page;

@@ -10,12 +10,13 @@ import { useAuth } from "@clerk/nextjs";
 
 import TagsField from "./TagsField";
 import { newNote } from "@/lib/note-actions/newNote";
+import Editor from "@/components/editor/Editor";
 
 type Props = {};
 
 const NewNote = ({}: Props) => {
   const [title, setTitle] = React.useState("");
-  const [content, setContent] = React.useState("");
+  const [content, setContent] = React.useState<string>("");
   const { userId } = useAuth();
   const [tags, setTags] = React.useState<String[]>([]);
   const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
@@ -67,15 +68,16 @@ const NewNote = ({}: Props) => {
           setTags={setTags}
         />
       </CardHeader>
-      <CardContent className="h-[75vh]">
-        <Textarea
+      <CardContent className="">
+        <Editor content={content} setContent={setContent} />
+        {/* <Textarea
           className="h-full resize-none"
           value={content}
           onChange={(e) => {
             setContent(e.target.value);
           }}
           placeholder="Set your heart ablaze!"
-        />
+        /> */}
       </CardContent>
     </Card>
   );

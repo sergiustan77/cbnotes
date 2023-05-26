@@ -20,6 +20,8 @@ import { useAuth } from "@clerk/nextjs";
 import { Badge } from "./ui/badge";
 import TagsField from "./TagsField";
 import NoteDropdown from "./NoteDropdown";
+import HTMLToReact from "@/lib/htmlToReact";
+import Editor from "./editor/Editor";
 
 type Props = {
   note: Note;
@@ -125,16 +127,10 @@ const Note = ({ note, initialTags }: Props) => {
         )}
       </CardHeader>
       {!isEditing ? (
-        <CardContent className="">{note.content}</CardContent>
+        <CardContent className="">{HTMLToReact(note.content)}</CardContent>
       ) : (
-        <CardContent className="h-[75vh]">
-          <Textarea
-            className="h-full resize-none"
-            value={content}
-            onChange={(e) => {
-              setContent(e.target.value);
-            }}
-          />
+        <CardContent className="">
+          <Editor content={content} setContent={setContent} />
         </CardContent>
       )}
     </Card>

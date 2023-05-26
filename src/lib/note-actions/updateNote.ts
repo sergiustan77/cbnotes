@@ -33,6 +33,7 @@ export async function updateNote(
         `
       MATCH (n:Note {id: $id})-[r:TAGGED_IN]->(t:Tag {name: $tag})
       DELETE r
+  
       `,
         { id, tag }
       )

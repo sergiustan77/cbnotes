@@ -4,39 +4,40 @@ import TagsData from "@/lib/interfaces/TagsData";
 import Link from "next/link";
 import { ScrollArea } from "./ui/scroll-area";
 import { Tag } from "lucide-react";
+import { cn } from "@/lib/utils";
+import TagComponent from "./Tag";
 
 type Props = {
   tags: string[];
   count: string;
+  setFilterTags: Function;
+  filterTags: string[];
 };
 
-const Tags = ({ tags, count }: Props) => {
+const Tags = ({ tags, count, setFilterTags, filterTags }: Props) => {
   return (
-    <div className="w-full  my-2">
+    <div className="w-full h-full">
       {tags ? (
         <div className="flex flex-col gap-2">
-          <div className="flex gap-2 mb-2 items-center place-content-between   scroll-m-20 text-md font-bold tracking-tight ">
-            <div className="flex items-center text-md gap-1 ">
-              <Tag strokeWidth={3} size={18} /> <span className=" ">Tags</span>
-            </div>
-            <div className="flex  items-center gap-8 text-muted-foreground">
-              {count} Found
-            </div>
-          </div>
           {tags.length > 0 ? (
-            <ScrollArea className="  h-min-24 md:h-auto   ">
-              <div className="h-full flex flex-wrap gap-1">
+            <ScrollArea className="w-full h-20 min-h-20 max-h-20 md:h-fit md:max-h-fit ">
+              <div className=" w-full h-32 min-h-20 max-h-20  md:max-h-32 flex flex-wrap place-content-start gap-1">
                 {tags.map((t, i) => (
-                  <Link key={i} href={`/notes/tag/${t}`}>
-                    <Badge>{t}</Badge>
-                  </Link>
+                  <TagComponent
+                    filterTags={filterTags}
+                    setFilterTags={setFilterTags}
+                    name={t.toString()}
+                  />
                 ))}
               </div>
             </ScrollArea>
           ) : (
-            <h1 className="text-center  min-h-24 md:h-full  text-muted-foreground my-2 ">
+            <Badge
+              variant={"outline"}
+              className=" border-none h-32 min-h-20 max-h-20  md:max-h-32 px-4 py-2 w-full place-content-center text-center text-muted-foreground"
+            >
               No tags found
-            </h1>
+            </Badge>
           )}
         </div>
       ) : (

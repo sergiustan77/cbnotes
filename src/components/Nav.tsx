@@ -1,13 +1,14 @@
+"use client";
 import ThemeToggle from "./ui/ThemeToggle";
 import { buttonVariants } from "./ui/button";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
-import { currentUser } from "@clerk/nextjs";
-import { PlusIcon, StickyNote } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
+import { PlusIcon, StickyNote, Tag } from "lucide-react";
 import Link from "next/link";
 type Props = {};
 
-const Nav = async (props: Props) => {
-  const user = await currentUser();
+const Nav = (props: Props) => {
+  const { user } = useUser();
   return (
     <div className="  border-b p-2">
       <div className="container flex place-content-between">

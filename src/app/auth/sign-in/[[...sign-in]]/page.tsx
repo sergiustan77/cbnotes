@@ -5,7 +5,7 @@ const Page = () => {
   return (
     <div className="container mx-auto flex justify-center items-center h-[90vh]">
       <SignIn
-        redirectUrl={"/create-user"}
+        redirectUrl={"/notes"}
         signUpUrl="/auth/sign-up"
         appearance={{
           elements: {

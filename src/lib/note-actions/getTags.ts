@@ -1,3 +1,4 @@
+import { TagIcon } from "lucide-react";
 import { driver } from "./../neo4j";
 export const getTags = async (userId: any) => {
   const session = driver.session();
@@ -5,22 +6,17 @@ export const getTags = async (userId: any) => {
   const res = await session.executeRead((tx) =>
     tx.run(
       `MATCH (u:User {userId: $userId})-[r:HAS_TAG]->(t:Tag)
-      WITH COUNT(t) as count, COLLECT(t.name) as tags
-        RETURN DISTINCT count, tags
+      OPTIONAL MATCH (n:Note)-[:TAGGED_IN]->(t)
+
+      WITH t, COLLECT(n) AS notes
+      RETURN {tag: t.name, notes: notes} as tag
            `,
       { userId }
     )
   );
 
   session.close();
-  const values = res.records[0];
-  const tagCount = await values.get("count");
-  const tagNames = await values.get("tags");
+  const tags = res.records.map((r) => r.get("tag"));
 
-  const tagsObject = {
-    tags: tagNames,
-    count: tagCount,
-  };
-
-  return tagsObject;
+  return tags;
 };

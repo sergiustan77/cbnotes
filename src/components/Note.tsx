@@ -1,7 +1,7 @@
 "use client";
 import Note from "@/lib/interfaces/Note";
 import React from "react";
-import { Save, Edit3, X } from "lucide-react";
+import { Save, Edit3, X, Trash2, Info } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -19,6 +19,7 @@ import { updateNote } from "@/lib/note-actions/updateNote";
 import { useAuth } from "@clerk/nextjs";
 import { Badge } from "./ui/badge";
 import TagsField from "./TagsField";
+import NoteDropdown from "./NoteDropdown";
 
 type Props = {
   note: Note;
@@ -64,15 +65,11 @@ const Note = ({ note, initialTags }: Props) => {
             />
           )}
           {!isEditing ? (
-            <Button
-              size={"icon"}
-              variant={"ghost"}
-              onClick={() => {
-                setIsEditing(true);
-              }}
-            >
-              <Edit3 />
-            </Button>
+            <NoteDropdown
+              userId={userId as string}
+              id={note.id}
+              setEditing={setIsEditing}
+            />
           ) : (
             <div className="flex flex-col md:flex-row items-center gap-2">
               <Button
@@ -82,6 +79,7 @@ const Note = ({ note, initialTags }: Props) => {
                   setIsEditing(false);
                   setContent(note.content);
                   setTitle(note.title);
+                  setTags(initialTags);
                 }}
               >
                 <X />

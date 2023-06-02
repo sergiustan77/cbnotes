@@ -23,7 +23,8 @@ export async function newNote(
 
   const resNote = await session.executeWrite((tx) =>
     tx.run(
-      `
+      `MERGE (u:User {userId: $userId})
+      WITH u
       MATCH (u:User {userId: $userId})
       CREATE (n:Note {title: $title, content: $content, id: $id, created_at: datetime({timezone: 'Europe/Bucharest'}), updated_at: datetime({timezone: 'Europe/Bucharest'}) })
       CREATE (u)-[:HAS_NOTE]->(n)

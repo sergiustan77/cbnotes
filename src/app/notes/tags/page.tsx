@@ -14,7 +14,7 @@ const page = async (props: Props) => {
   const { userId } = auth();
   const tags = await getTags(userId);
   return (
-    <div className="container h-[90vh]  flex flex-col gap-4 my-6 ">
+    <div className="container mx-auto h-[90vh]  flex flex-col gap-4 my-6 ">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">
         Your tags
       </h1>

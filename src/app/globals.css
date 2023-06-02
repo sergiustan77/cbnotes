@@ -22,6 +22,37 @@ p {
   @apply leading-7 mt-0;
 }
 
+ul {
+  list-style: disc;
+}
+
+ol {
+  list-style: decimal;
+}
+ul,
+ol {
+  padding: 0 1rem;
+}
+
+.note-card img {
+  width: 300px;
+  height: 300px;
+}
+
+.note-card {
+  text-decoration: none;
+}
+
+blockquote {
+  @apply mt-6 border-l-2 pl-6 italic;
+}
+
+.note-link {
+  text-decoration: underline;
+
+  @apply text-muted-foreground;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

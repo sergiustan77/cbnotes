@@ -4,5 +4,5 @@
 }
 
 .ProseMirror {
-  @apply border rounded-md p-6 h-screen;
+  @apply border rounded-md p-6 min-h-screen;
 }

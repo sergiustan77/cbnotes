@@ -16,12 +16,10 @@ const page = async ({}: Props) => {
   const notes: any = await getNotes(userId);
 
   return (
-    <div className="container mt-4 rounded-md  h-[90vh]">
-      <div className="my-2 flex-row md:flex h-[70vh] gap-8 ">
+    <div className="container mx-auto mt-4 rounded-md h-auto">
+      <div className="my-2 flex-row md:flex w-full h-auto gap-8 ">
         <Suspense fallback={"Loading"}>
-          <div className="w-full ">
-            <SearchNotes notes={notes[0].notes} tags={notes[0].tags} />
-          </div>
+          <SearchNotes notes={notes[0].notes} tags={notes[0].tags} />
         </Suspense>
       </div>
     </div>

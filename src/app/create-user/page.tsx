@@ -26,7 +26,7 @@ const page = async (props: Props) => {
   if (createUser.length > 0) {
     redirect("/notes");
   }
-  return <div>Getting thing ready...</div>;
+  return <div className="text-primary">Getting thing ready...</div>;
 };
 
 export default page;

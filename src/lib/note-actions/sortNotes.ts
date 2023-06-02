@@ -10,16 +10,12 @@ export const sortNotes = async (
 ) => {
   const session = driver.session();
 
-  let query = `MATCH (u:User {userId: $userId})-[r:HAS_NOTE]->(n:Note)`;
+  let query = `MATCH (u:User {userId: $userId})-[r:HAS_NOTE]->(n:Note) `;
   if (tags.length > 0) {
-    query += `-[:TAGGED_IN]->(t:Tag) WHERE t.name in [`;
-    tags.map((t, i) =>
-      i < tags.length - 1 ? (query += `"${t}",`) : (query += `"${t}"`)
-    );
-    query += `]`;
-  }
+    query += `WHERE ALL(tag IN $tags WHERE (n)-[:TAGGED_IN]->(:Tag {name: tag})) `;
+  } else query += "";
 
-  query += ` WITH COLLECT(DISTINCT t.name) AS tags, n, t `;
+  query += `WITH n `;
   if (order === "title") {
     query += `ORDER BY n.title ${title.toUpperCase()}`;
   } else if (order === "updated_at") {
@@ -28,13 +24,18 @@ export const sortNotes = async (
     query += `ORDER BY n.updated_at DESC`;
   }
 
-  query += ` WITH COLLECT({title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags}) AS notes, COLLECT(DISTINCT t.name) as tags RETURN DISTINCT { notes: notes, tags: tags} as notesData`;
-  const resNotes = await session.executeRead((tx) => tx.run(query, { userId }));
+  query += ` OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
+  WITH COLLECT(DISTINCT t.name) AS tags, n
+ WITH {title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note
+ WITH COLLECT(note) as notes
+ RETURN notes`;
+  const resNotes = await session.executeRead((tx) =>
+    tx.run(query, { userId, tags })
+  );
 
   session.close();
 
-  const notes = resNotes.records.map((r) => r.get("notesData"));
-  console.log(notes[0].notes);
+  const notes = resNotes.records.map((r) => r.get("notes"));
 
-  return notes;
+  return notes[0];
 };

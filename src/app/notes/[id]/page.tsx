@@ -24,7 +24,7 @@ const page = async ({ params: { id } }: Props) => {
   }
 
   return (
-    <div className="container h-[90vh] my-4">
+    <div className="container mx-auto h-[90vh] my-4">
       <Note note={note} initialTags={tags} />
     </div>
   );

@@ -18,7 +18,7 @@ const page = async ({ params: { tag } }: Props) => {
 
   const notes = await getNotesByTags(userId, decodeURI(tag));
   return (
-    <div className="container my-6">
+    <div className="container mx-auto my-6">
       <h1 className="text-4xl w-full flex place-content-between md:flex-row  items-end h-full  mb-2 ">
         <div className="scroll-m-20 text-4xl font-extrabold tracking-tight flex gap-4">
           Tagged in:

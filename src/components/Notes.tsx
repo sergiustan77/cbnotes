@@ -1,4 +1,3 @@
-"use client";
 import {
   Card,
   CardTitle,
@@ -9,8 +8,11 @@ import {
 
 import Link from "next/link";
 import Note from "@/lib/interfaces/Note";
-import { Badge } from "./ui/badge";
+
 import HTMLToReact from "@/lib/htmlToReact";
+import HTMLReactParser from "html-react-parser";
+import NoteCard from "./NoteCard";
+import { Loader2 } from "lucide-react";
 
 type Props = {
   notes: Note[];
@@ -18,46 +20,23 @@ type Props = {
 
 const Notes = ({ notes }: Props) => {
   return (
-    <div className=" w-full  flex flex-col gap-2">
-      <div className="flex gap-2 items-cetner place-content-between   scroll-m-20 text-lg font-bold tracking-tight "></div>
-      {notes.length > 0 ? (
-        <div className="flex  min-h-[70vh] place-content-start flex-wrap gap-4 mb-2  ">
-          {notes.map((n) => (
-            <Link
-              className=" w-full md:w-60 h-72 flex-auto "
-              key={n.id}
-              href={`/notes/${n.id}`}
-            >
-              <Card
-                className=" hover:border-primary w-full h-full "
-                key={n.title}
-              >
-                <CardHeader>
-                  <CardTitle className="flex place-content-between items-center">
-                    {n.title}
-                  </CardTitle>
-
-                  <CardDescription>
-                    {new Date(n.updated_at).toLocaleString("ro-RO", {
-                      day: "numeric",
-                      month: "long",
-                      year: "numeric",
-                    })}
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-xs h-40 overflow-hidden text-ellipsis ">
-                    {HTMLToReact(n.content)}
-                  </CardDescription>
-                </CardContent>
-              </Card>
-            </Link>
-          ))}
-        </div>
+    <div className="w-full mt-6">
+      {notes ? (
+        notes.length > 0 ? (
+          <div className="   w-full h-full flex flex-wrap place-content-start gap-4  ">
+            {notes.map((n) => (
+              <NoteCard note={n} />
+            ))}
+          </div>
+        ) : (
+          <p className=" text-center w-full font-semibold text-muted-foreground p-4 my-2 ">
+            No notes found
+          </p>
+        )
       ) : (
-        <h1 className=" text-center w-full min-h-[70vh] text-muted-foreground p-4 my-2 ">
-          No notes found
-        </h1>
+        <div>
+          <Loader2 className=" animate-spin" />
+        </div>
       )}
     </div>
   );

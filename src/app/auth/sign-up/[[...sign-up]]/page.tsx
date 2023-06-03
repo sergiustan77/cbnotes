@@ -18,7 +18,8 @@ const Page = () => {
   return (
     <div className="container mx-auto flex justify-center items-center h-[90vh]">
       <SignUp
-        redirectUrl={"/create-user"}
+        redirectUrl={"/notes"}
+        signInUrl={"/auth/sign-in"}
         appearance={{
           elements: {
             card: "rounded-xl border-border bg-card text-card-foreground shadow-sm p-8 ",

@@ -15,7 +15,7 @@ type Props = {
   tagCount: string;
 };
 
-const SearchTags = ({ tags, tagCount, setFilterTags, filterTags }: Props) => {
+const SearchTags = ({ tags, setFilterTags, filterTags }: Props) => {
   const [query, setQuery] = React.useState("");
 
   const filterTagSuggestions = (array: any) => {

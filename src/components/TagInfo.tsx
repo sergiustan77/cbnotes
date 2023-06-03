@@ -31,7 +31,7 @@ const NoteDropdown = ({ userId, tag }: Props) => {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className=" ">
-        <DropdownMenuLabel>Note Actions</DropdownMenuLabel>
+        <DropdownMenuLabel>Tag Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuItem

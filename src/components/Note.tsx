@@ -22,6 +22,7 @@ import TagsField from "./TagsField";
 import NoteDropdown from "./NoteDropdown";
 import HTMLToReact from "@/lib/htmlToReact";
 import Editor from "./editor/Editor";
+import HTMLReactParser from "html-react-parser";
 
 type Props = {
   note: Note;
@@ -35,6 +36,8 @@ const Note = ({ note, initialTags }: Props) => {
   const [title, setTitle] = React.useState(note.title);
   const [tags, setTags] = React.useState<String[]>(initialTags);
   const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
+  const [linkOpen, setLinkOpen] = React.useState(false);
+  const [link, setLink] = React.useState("");
   const { userId } = useAuth();
   const router = useRouter();
 
@@ -127,7 +130,7 @@ const Note = ({ note, initialTags }: Props) => {
         )}
       </CardHeader>
       {!isEditing ? (
-        <CardContent className="">{HTMLToReact(note.content)}</CardContent>
+        <CardContent className="">{HTMLReactParser(note.content)}</CardContent>
       ) : (
         <CardContent className="">
           <Editor content={content} setContent={setContent} />

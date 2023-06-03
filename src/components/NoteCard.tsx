@@ -44,7 +44,7 @@ const NoteCard = ({ note }: Props) => {
 
           <CardContent className="h-55 pb-24 w-full  overflow-hidden flex place-content-start  ">
             <div className="overflow-hidden px-2 h-44 w-full ">
-              {HTMLToReact(note.content)}
+              {HTMLReactParser(note.content)}
             </div>
           </CardContent>
         </Card>

@@ -1,50 +1,25 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import { Button } from "./button";
-import { Moon, Sun, Loader2 } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 
 import { useTheme } from "next-themes";
 
 type Props = {};
 
 const ThemeToggle = (props: Props) => {
-  const { theme, systemTheme, setTheme } = useTheme();
-  const [mounted, setMounted] = React.useState(false);
-  const currentTheme = theme === "system" ? systemTheme : theme;
+  const { theme, setTheme } = useTheme();
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
   return (
-    <div>
-      {mounted ? (
-        <div className="  ">
-          {currentTheme === "dark" ? (
-            <Button
-              onClick={() => setTheme("light")}
-              variant={"ghost"}
-              size={"icon"}
-            >
-              <Sun />
-            </Button>
-          ) : (
-            <Button
-              onClick={() => setTheme("dark")}
-              variant={"ghost"}
-              size={"icon"}
-            >
-              <Moon />
-            </Button>
-          )}
-        </div>
-      ) : (
-        <div className="">
-          <Button variant={"ghost"} size={"icon"}>
-            <Loader2 className=" animate-spin" />
-          </Button>
-        </div>
-      )}
-    </div>
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+    >
+      <Sun className="rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+      <Moon className="absolute rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+      <span className="sr-only">Toggle theme</span>
+    </Button>
   );
 };
 

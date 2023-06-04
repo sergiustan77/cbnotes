@@ -9,12 +9,11 @@ import Notes from "./Notes";
 import { Label } from "./ui/label";
 import TagFilter from "./TagFilter";
 import SortFilter from "./SortFilter";
-import sortNoteInClient from "@/lib/note-actions/sortNotesinClient";
+
 import Link from "next/link";
 import SearchTags from "./SearchTags";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
-import { Suspense } from "react";
 import { sortNotes } from "@/lib/note-actions/sortNotes";
 import { useAuth } from "@clerk/nextjs";
 type Props = {
@@ -31,6 +30,7 @@ const SearchNotes = ({ notes, tags }: Props) => {
   const [filterTags, setFilterTags] = React.useState<string[]>([]);
   const [mounted, setMounted] = React.useState(false);
   const [displayedNotes, setDisplayedNotes] = React.useState(notes);
+  const [notesAreLoading, setNotesAreLoading] = React.useState(false);
   const { userId } = useAuth();
 
   const filterNoteSuggestions = (array: Note[]) => {
@@ -43,31 +43,36 @@ const SearchNotes = ({ notes, tags }: Props) => {
   };
 
   const filterAndSortNotes = async () => {
+    setNotesAreLoading(true);
+
     const filteredAndSortedNotes = await sortNotes(
       userId,
       sortBy,
       date,
       title,
       filterTags
-    );
-
-    const notesReadyToDisplay = filterNoteSuggestions(filteredAndSortedNotes);
-    setDisplayedNotes(notesReadyToDisplay);
-    if (filter === "all") {
-      setFilterTags([]);
-    }
+    ).then((notes) => {
+      setNotesAreLoading(false);
+      setDisplayedNotes(notes);
+      if (filter === "all" && filterTags.length > 0) {
+        setFilterTags([]);
+      }
+    });
   };
+
+  const notesReadyToDisplay = filterNoteSuggestions(displayedNotes);
+
   useEffect(() => {
     setMounted(true);
 
     filterAndSortNotes();
-  }, [date, title, filterTags, sortBy, filter]);
+  }, [date, title, sortBy, filterTags, filter]);
   return (
     <div className=" my-4 w-full flex flex-col  gap-2  ">
       {mounted ? (
         <>
           <div className="flex w-full place-content-between items-center gap-1">
-            <div className="flex gap-1 scroll-m-20 text-2xl             font-semibold tracking-tight items-end">
+            <div className="flex gap-1 scroll-m-20 text-2xl font-semibold tracking-tight items-end">
               {" "}
               <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight  ">
                 All Notes
@@ -142,11 +147,15 @@ const SearchNotes = ({ notes, tags }: Props) => {
           )}
 
           <div className="w-full min-h-[70vh]">
-            {displayedNotes ? <Notes notes={displayedNotes} /> : "Loading"}
+            {!notesAreLoading ? (
+              <Notes notes={notesReadyToDisplay} />
+            ) : (
+              "Loading"
+            )}
           </div>
         </>
       ) : (
-        <div>
+        <div className=" container mx-auto w-screen h-screen grid place-items-center">
           <Loader2 className="animate-spin" />
         </div>
       )}

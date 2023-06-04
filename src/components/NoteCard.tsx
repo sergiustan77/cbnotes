@@ -23,32 +23,30 @@ const NoteCard = ({ note }: Props) => {
       className="flex-auto w-full md:w-64  overflow-hidden h-80 rounded-lg "
       href={`/notes/${note.id}`}
     >
-      <Suspense fallback={"loading"}>
-        <Card className="w-full h-80 hover:border-primary">
-          <CardHeader className="h-25">
-            <CardTitle>{note.title}</CardTitle>
-            <CardDescription>
-              {new Date(note.updated_at).toLocaleString("ro-RO", {
-                day: "numeric",
-                month: "long",
-                year: "numeric",
-              })}
-            </CardDescription>
+      <Card className="w-full h-80 overflow-hidden hover:border-primary">
+        <CardHeader className="h-25">
+          <CardTitle>{note.title}</CardTitle>
+          <CardDescription>
+            {new Date(note.updated_at).toLocaleString("ro-RO", {
+              day: "numeric",
+              month: "long",
+              year: "numeric",
+            })}
+          </CardDescription>
 
-            <div className=" overflow-hidden w-full flex flex-wrap gap-1 h-6">
-              {note.tags.map((t) => (
-                <Badge className="">{t}</Badge>
-              ))}
-            </div>
-          </CardHeader>
+          <div className=" overflow-hidden w-full flex flex-wrap gap-1 h-6">
+            {note.tags.map((t) => (
+              <Badge className="">{t}</Badge>
+            ))}
+          </div>
+        </CardHeader>
 
-          <CardContent className="h-55 pb-24 w-full  overflow-hidden flex place-content-start  ">
-            <div className="overflow-hidden px-2 h-44 w-full ">
-              {HTMLReactParser(note.content)}
-            </div>
-          </CardContent>
-        </Card>
-      </Suspense>
+        <CardContent className="h-55 pb-24 w-full  overflow-hidden flex place-content-start  ">
+          <div className="overflow-hidden px-2 h-44 w-full ">
+            {HTMLReactParser(note.content)}
+          </div>
+        </CardContent>
+      </Card>
     </Link>
   );
 };

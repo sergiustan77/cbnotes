@@ -1,19 +1,10 @@
 import React from "react";
-import { UserButton } from "@clerk/nextjs";
-import { driver } from "@/lib/neo4j";
-import { Input } from "@/components/ui/input";
-import { Button, buttonVariants } from "@/components/ui/button";
+
+import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { SignedOut, SignedIn } from "@clerk/nextjs";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+
 const Page = () => {
   return (
     <div className="container mx-auto flex flex-col p-[2px] justify-center border   rounded-md mt-4 items-center h-[90vh] ">

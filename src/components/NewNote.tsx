@@ -9,7 +9,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 
 import TagsField from "./TagsField";
-import { newNote } from "@/lib/note-actions/newNote";
 import Editor from "@/components/editor/Editor";
 
 type Props = {};
@@ -22,6 +21,21 @@ const NewNote = ({}: Props) => {
   const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
 
   const router = useRouter();
+
+  const newNote = async () => {
+    const res = await fetch("http://localhost:3000/api/notes/new", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: userId as string,
+        title: title,
+        content: content,
+        tags: tags,
+      }),
+    }).then(() => {
+      router.push("/notes");
+      router.refresh();
+    });
+  };
 
   return (
     <Card className="h-fit shadow-none border-none w-full">
@@ -46,16 +60,7 @@ const NewNote = ({}: Props) => {
             >
               <X />
             </Button>
-            <Button
-              variant={"default"}
-              size={"icon"}
-              onClick={() => {
-                newNote(userId as string, title, content, tags).then(() => {
-                  router.push("/notes");
-                  router.refresh();
-                });
-              }}
-            >
+            <Button variant={"default"} size={"icon"} onClick={newNote}>
               <Save />
             </Button>
           </div>

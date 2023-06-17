@@ -1,16 +1,5 @@
-import {
-  Card,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
-
-import Link from "next/link";
 import Note from "@/lib/interfaces/Note";
 
-import HTMLToReact from "@/lib/htmlToReact";
-import HTMLReactParser from "html-react-parser";
 import NoteCard from "./NoteCard";
 import { Loader2 } from "lucide-react";
 
@@ -24,8 +13,8 @@ const Notes = ({ notes }: Props) => {
       {notes ? (
         notes.length > 0 ? (
           <div className="   w-full h-full flex flex-wrap place-content-start gap-4  ">
-            {notes.map((n) => (
-              <NoteCard note={n} />
+            {notes.map((n, i) => (
+              <NoteCard key={i} note={n} />
             ))}
           </div>
         ) : (

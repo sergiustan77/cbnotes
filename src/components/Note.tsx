@@ -1,13 +1,12 @@
 "use client";
 import Note from "@/lib/interfaces/Note";
 import React from "react";
-import { Save, Edit3, X, Trash2, Info } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardTitle,
   CardHeader,
 } from "@/components/ui/card";
@@ -15,14 +14,17 @@ import {
 import { Button } from "./ui/button";
 import { Textarea } from "./ui/textarea";
 
-import { updateNote } from "@/lib/note-actions/updateNote";
 import { useAuth } from "@clerk/nextjs";
 import { Badge } from "./ui/badge";
 import TagsField from "./TagsField";
 import NoteDropdown from "./NoteDropdown";
-import HTMLToReact from "@/lib/htmlToReact";
+
 import Editor from "./editor/Editor";
 import HTMLReactParser from "html-react-parser";
+import parse, { Element, domToReact } from "html-react-parser";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import { Integer } from "neo4j-driver";
 
 type Props = {
   note: Note;
@@ -41,6 +43,26 @@ const Note = ({ note, initialTags }: Props) => {
   const { userId } = useAuth();
   const router = useRouter();
 
+  const updateNote = async () => {
+    const res = await fetch("http://localhost:3000/api/notes/update", {
+      method: "POST",
+      body: JSON.stringify({
+        id: note.id,
+        userId: userId as string,
+        title: title,
+        content: content,
+        tags: tags,
+        tagsToRemove: tagsToRemove,
+      }),
+    }).then(() => {
+      router.refresh();
+      setIsEditing(false);
+    });
+  };
+
+  const imageLoader = ({ src }: { src: string }) => {
+    return src;
+  };
   return (
     <Card className="h-fit shadow-none border-none w-full">
       <CardHeader className=" py-4 ">
@@ -89,23 +111,7 @@ const Note = ({ note, initialTags }: Props) => {
               >
                 <X />
               </Button>
-              <Button
-                size={"icon"}
-                variant={"default"}
-                onClick={() => {
-                  updateNote(
-                    note.id,
-                    userId as string,
-                    title,
-                    content,
-                    tags,
-                    tagsToRemove
-                  ).then(() => {
-                    router.refresh();
-                    setIsEditing(false);
-                  });
-                }}
-              >
+              <Button size={"icon"} variant={"default"} onClick={updateNote}>
                 <Save />
               </Button>
             </div>
@@ -130,7 +136,28 @@ const Note = ({ note, initialTags }: Props) => {
         )}
       </CardHeader>
       {!isEditing ? (
-        <CardContent className="">{HTMLReactParser(note.content)}</CardContent>
+        <CardContent className="">
+          {parse(note.content, {
+            replace: (domNode) => {
+              const node = domNode as Element;
+
+              if (
+                node.attribs &&
+                (node.name === "img" || node.name === "image-resizer")
+              ) {
+                return (
+                  <Image
+                    loader={imageLoader}
+                    alt={node.attribs.src}
+                    src={node.attribs.src.toString()}
+                    width={parseInt(node.attribs.width) || 300}
+                    height={parseInt(node.attribs.height) || 300}
+                  />
+                );
+              }
+            },
+          })}
+        </CardContent>
       ) : (
         <CardContent className="">
           <Editor content={content} setContent={setContent} />

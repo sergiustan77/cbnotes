@@ -1,10 +1,8 @@
 import React from "react";
 import { Badge } from "./ui/badge";
-import TagsData from "@/lib/interfaces/TagsData";
-import Link from "next/link";
+
 import { ScrollArea } from "./ui/scroll-area";
-import { Tag } from "lucide-react";
-import { cn } from "@/lib/utils";
+
 import TagComponent from "./Tag";
 
 type Props = {

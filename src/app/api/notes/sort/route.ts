@@ -1,13 +1,9 @@
-import { driver } from "./../neo4j";
-import { getNoteTags } from "./getNoteTags";
-export const sortNotes = async (
-  userId: any,
+import { NextRequest, NextResponse } from "next/server";
+import { driver } from "@/lib/neo4j";
 
-  order: string,
-  date: string,
-  title: string,
-  tags: string[]
-) => {
+export async function POST(request: NextRequest) {
+  const { title, userId, tags, order, date } = await request.json();
+
   const session = driver.session();
 
   let query = `MATCH (u:User {userId: $userId})-[r:HAS_NOTE]->(n:Note) `;
@@ -29,13 +25,20 @@ export const sortNotes = async (
  WITH {title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note
  WITH COLLECT(note) as notes
  RETURN notes`;
-  const resNotes = await session.executeRead((tx) =>
-    tx.run(query, { userId, tags })
-  );
 
-  session.close();
-
-  const notes = resNotes.records.map((r) => r.get("notes"));
-
-  return notes[0];
-};
+  try {
+    const resNotes = await session.executeRead((tx) =>
+      tx.run(query, { userId, tags })
+    );
+    const notes = resNotes.records.map((r) => r.get("notes"));
+    await session.close();
+    return NextResponse.json(notes[0]);
+  } catch (error) {
+    await session.close();
+    return NextResponse.json({
+      status: 500,
+      message: "An error occured while sorting your notes!",
+      error: error,
+    });
+  }
+}

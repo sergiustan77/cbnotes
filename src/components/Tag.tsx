@@ -1,7 +1,6 @@
 "use client";
 import React from "react";
 import { Badge } from "./ui/badge";
-import { cn } from "@/lib/utils";
 
 type Props = {
   name: string;

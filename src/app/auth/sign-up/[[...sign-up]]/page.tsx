@@ -1,17 +1,4 @@
-import { signIn } from "next-auth/react";
 import React from "react";
-import { driver } from "@/lib/neo4j";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 
 import { SignUp } from "@clerk/nextjs";
 const Page = () => {

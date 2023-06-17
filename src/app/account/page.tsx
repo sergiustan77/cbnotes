@@ -1,5 +1,5 @@
 import React from "react";
-import { UserProfile, UserButton } from "@clerk/nextjs";
+import { UserProfile } from "@clerk/nextjs";
 
 const page = () => {
   return (

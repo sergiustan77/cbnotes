@@ -13,8 +13,6 @@ import { Info, Edit2, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
-import { deleteNote } from "@/lib/note-actions/deleteNote";
-
 type Props = {
   setEditing: Function;
   userId: string;
@@ -24,7 +22,13 @@ type Props = {
 const NoteDropdown = ({ setEditing, userId, id }: Props) => {
   const router = useRouter();
   const deleteNoteHandle = async () => {
-    await deleteNote(id, userId).then(() => {
+    const res = fetch("http://localhost:3000/api/notes/delete", {
+      method: "POST",
+      body: JSON.stringify({
+        id: id,
+        userId: userId,
+      }),
+    }).then(() => {
       router.push("/notes");
       router.refresh();
     });

@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 // Set the paths that don't require the user to be signed in
-const publicPaths = ["/", "/auth/sign-in*", "/auth/sign-up*"];
+const publicPaths = ["/", "/auth/sign-in*", "/auth/sign-up*", "/api/**"];
 
 const isPublic = (path: string) => {
   return publicPaths.find((x) =>

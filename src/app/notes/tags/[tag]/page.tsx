@@ -1,22 +1,38 @@
-import React from "react";
+"use client";
+import React, { useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Tag } from "lucide-react";
+import { Loader2, Tag } from "lucide-react";
 import Notes from "@/components/Notes";
-import { getNotesByTags } from "@/lib/note-actions/getNotesByTags";
-import { auth } from "@clerk/nextjs";
+
+import { useAuth } from "@clerk/nextjs";
+import { useParams } from "next/navigation";
 
 import TagInfo from "@/components/TagInfo";
 
-type Props = {
-  params: {
-    tag: string;
+type Props = {};
+
+const page = (props: Props) => {
+  const [notes, setNotes] = React.useState([]);
+  const [loading, setLoading] = React.useState(true);
+  const { tag } = useParams();
+  const { userId } = useAuth();
+  const getNotesByTag = async () => {
+    const res = await fetch(
+      `http://localhost:3000/api/notes/tags/tag?tag=${decodeURI(
+        tag
+      )}&userId=${userId}`
+    );
+
+    const notesData = await res.json().then((notes) => {
+      setNotes(notes);
+      setLoading(false);
+    });
   };
-};
+  useEffect(() => {
+    setLoading(true);
+    getNotesByTag();
+  }, []);
 
-const page = async ({ params: { tag } }: Props) => {
-  const { userId } = auth();
-
-  const notes = await getNotesByTags(userId, decodeURI(tag));
   return (
     <div className="container mx-auto my-6">
       <h1 className="text-4xl w-full flex place-content-between md:flex-row  items-end h-full  mb-2 ">
@@ -39,7 +55,11 @@ const page = async ({ params: { tag } }: Props) => {
           <TagInfo userId={userId as string} tag={decodeURI(tag)} />
         </div>
       </h1>
-      <Notes notes={notes} />
+      {loading ? (
+        <Loader2 className=" animate-spin" />
+      ) : (
+        <Notes notes={notes} />
+      )}
     </div>
   );
 };

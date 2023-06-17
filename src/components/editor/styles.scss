@@ -3,6 +3,23 @@
     margin-top: 0.75em;
   }
 
+  .image-resizer {
+    display: inline-flex;
+    position: relative;
+    flex-grow: 0;
+    .resize-trigger {
+      position: absolute;
+      right: -9px;
+      bottom: -9px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+
+      @apply h-6 w-6 px-0 rounded-sm text-primary-foreground bg-primary;
+    }
+    &:hover .resize-trigger {
+      opacity: 1;
+    }
+  }
   ul,
   ol {
     padding: 0 1rem;

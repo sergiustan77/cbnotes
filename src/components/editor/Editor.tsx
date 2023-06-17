@@ -4,8 +4,6 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -16,6 +14,7 @@ import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
 import TextStyle from "@tiptap/extension-text-style";
 import { EditorContent, useEditor } from "@tiptap/react";
+import ImageResize from "./image";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import React from "react";
@@ -41,9 +40,9 @@ import {
   FlagTriangleRight,
   Undo2,
   Redo2,
-  Save,
   LinkIcon,
   ImageIcon,
+  Scaling,
 } from "lucide-react";
 import Link from "@tiptap/extension-link";
 
@@ -298,7 +297,6 @@ type EditorPros = {
 };
 
 export default ({ setContent, content }: EditorPros) => {
-  const [text, setText] = React.useState("");
   const [linkOpen, setLinkOpen] = React.useState(false);
   const [link, setLink] = React.useState("");
 
@@ -306,7 +304,18 @@ export default ({ setContent, content }: EditorPros) => {
     extensions: [
       HardBreak,
       Link,
-      Image,
+      Image.configure({
+        inline: false,
+
+        HTMLAttributes: {
+          class: "w-fit h-fit bg-yellow-200 ",
+        },
+      }),
+      ImageResize.configure({
+        inline: false,
+
+        resizeIcon: <Scaling className="h-6 w-6" />,
+      }),
       Color.configure({ types: [TextStyle.name, ListItem.name] }),
       TextStyle.configure({}),
       StarterKit.configure({

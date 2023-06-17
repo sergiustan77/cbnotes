@@ -1,18 +1,27 @@
 import { Badge } from "@/components/ui/badge";
-import { getTags } from "@/lib/note-actions/getTags";
+
 import { auth } from "@clerk/nextjs";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import React from "react";
 
 type Props = {};
 
-const page = async (props: Props) => {
-  const t: string = "";
+const getTags = async (userId: string) => {
+  const res = await fetch(
+    `http://localhost:3000/api/notes/tags?userId=${userId}`,
+    {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
 
+  return await res.json();
+};
+const page = async (props: Props) => {
   const { userId } = auth();
-  const tags = await getTags(userId);
+  const tags = await getTags(userId as string);
   return (
     <div className="container mx-auto h-[90vh]  flex flex-col gap-4 my-6 ">
       <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight">

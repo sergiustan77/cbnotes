@@ -3,7 +3,6 @@ import React from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
-  DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuRadioGroup,
@@ -20,7 +19,6 @@ import {
   ChevronsUpDown,
   CaseSensitive,
   Sunset,
-  Sunrise,
 } from "lucide-react";
 
 type Props = {

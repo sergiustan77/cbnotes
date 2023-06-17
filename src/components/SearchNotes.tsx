@@ -14,7 +14,7 @@ import Link from "next/link";
 import SearchTags from "./SearchTags";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "./ui/button";
-import { sortNotes } from "@/lib/note-actions/sortNotes";
+
 import { useAuth } from "@clerk/nextjs";
 type Props = {
   notes: Note[];
@@ -45,13 +45,21 @@ const SearchNotes = ({ notes, tags }: Props) => {
   const filterAndSortNotes = async () => {
     setNotesAreLoading(true);
 
-    const filteredAndSortedNotes = await sortNotes(
-      userId,
-      sortBy,
-      date,
-      title,
-      filterTags
-    ).then((notes) => {
+    const filteredAndSortedNotes = await fetch(
+      "http://localhost:3000/api/notes/sort",
+      {
+        method: "POST",
+        body: JSON.stringify({
+          userId: userId,
+          order: sortBy,
+          date: date,
+          title: title,
+          tags: filterTags,
+        }),
+      }
+    );
+
+    const notes = await filteredAndSortedNotes.json().then((notes) => {
       setNotesAreLoading(false);
       setDisplayedNotes(notes);
       if (filter === "all" && filterTags.length > 0) {

@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 
 import { Input } from "./ui/input";
 
-import { Search, Plus, Tag, Loader2 } from "lucide-react";
+import { Search, Plus, Tag } from "lucide-react";
 import Note from "@/lib/interfaces/Note";
 import Notes from "./Notes";
 import { Label } from "./ui/label";
@@ -28,8 +28,8 @@ const SearchNotes = ({ notes, tags }: Props) => {
   const [title, setTitle] = React.useState("ASC");
   const [filter, setFilter] = React.useState("all");
   const [filterTags, setFilterTags] = React.useState<string[]>([]);
-  const [mounted, setMounted] = React.useState(false);
-  const [displayedNotes, setDisplayedNotes] = React.useState(notes);
+
+  const [displayedNotes, setDisplayedNotes] = React.useState([]);
   const [notesAreLoading, setNotesAreLoading] = React.useState(false);
   const { userId } = useAuth();
 
@@ -71,102 +71,88 @@ const SearchNotes = ({ notes, tags }: Props) => {
   const notesReadyToDisplay = filterNoteSuggestions(displayedNotes);
 
   useEffect(() => {
-    setMounted(true);
-
     filterAndSortNotes();
   }, [date, title, sortBy, filterTags, filter]);
   return (
     <div className=" my-4 w-full flex flex-col  gap-2  ">
-      {mounted ? (
-        <>
-          <div className="flex w-full place-content-between items-center gap-1">
-            <div className="flex gap-1 scroll-m-20 text-2xl font-semibold tracking-tight items-end">
-              {" "}
-              <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight  ">
-                All Notes
-              </h1>
-            </div>
-            <div className="flex items-end gap-2 ">
-              <div className="flex gap-2 items-end">
-                <Link
-                  className={cn(
-                    buttonVariants({
-                      variant: "default",
-                      size: "sm",
-                    }),
-                    "flex gap-1"
-                  )}
-                  href={`/notes/new-note`}
-                >
-                  <Plus className="h-4 w-4" /> New
-                </Link>
-                <Link
-                  className={cn(
-                    buttonVariants({
-                      variant: "ghost",
-                      size: "icon",
-                    })
-                  )}
-                  href={`/notes/tags`}
-                >
-                  <Tag />
-                </Link>
-                <TagFilter filter={filter} setFilter={setFilter} />
-                <SortFilter
-                  date={date}
-                  sortBy={sortBy}
-                  setDate={setDate}
-                  setSortBy={setSortBy}
-                  title={title}
-                  setTitle={setTitle}
-                />
-              </div>
-              <div className="text-lg w-20  flex place-content-end">
-                {" "}
-                {displayedNotes.length} found
-              </div>
-            </div>
-          </div>
-
-          <Label className="relative block w-full">
-            <Search
-              size={18}
-              className="absolute top-1/2 transform -translate-y-1/2 left-2"
+      <div className="flex w-full place-content-between items-center gap-1">
+        <div className="flex gap-1 scroll-m-20 text-2xl font-semibold tracking-tight items-end">
+          {" "}
+          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight  ">
+            All Notes
+          </h1>
+        </div>
+        <div className="flex items-end gap-2 ">
+          <div className="flex gap-2 items-end">
+            <Link
+              className={cn(
+                buttonVariants({
+                  variant: "default",
+                  size: "sm",
+                }),
+                "flex gap-1"
+              )}
+              href={`/notes/new-note`}
+            >
+              <Plus className="h-4 w-4" /> New
+            </Link>
+            <Link
+              className={cn(
+                buttonVariants({
+                  variant: "ghost",
+                  size: "icon",
+                })
+              )}
+              href={`/notes/tags`}
+            >
+              <Tag />
+            </Link>
+            <TagFilter filter={filter} setFilter={setFilter} />
+            <SortFilter
+              date={date}
+              sortBy={sortBy}
+              setDate={setDate}
+              setSortBy={setSortBy}
+              title={title}
+              setTitle={setTitle}
             />
-            <Input
-              className="pl-8"
-              id="search"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-              }}
-              placeholder={"Search in notes"}
-            />
-          </Label>
-          {filter === "by_tags" && (
-            <div className="border rounded-md p-4">
-              <SearchTags
-                filterTags={filterTags}
-                setFilterTags={setFilterTags}
-                tags={tags}
-                tagCount={tags.length.toString()}
-              />
-            </div>
-          )}
-
-          <div className="w-full min-h-[70vh]">
-            {!notesAreLoading ? (
-              <Notes notes={notesReadyToDisplay} />
-            ) : (
-              "Loading"
-            )}
           </div>
-        </>
-      ) : (
-        <div className=" container mx-auto w-screen h-screen grid place-items-center">
-          <Loader2 className="animate-spin" />
+          <div className="text-lg w-20  flex place-content-end">
+            {" "}
+            {displayedNotes.length} found
+          </div>
+        </div>
+      </div>
+
+      <Label className="relative block w-full">
+        <Search
+          size={18}
+          className="absolute top-1/2 transform -translate-y-1/2 left-2"
+        />
+        <Input
+          className="pl-8"
+          id="search"
+          value={query}
+          onChange={(e) => {
+            setQuery(e.target.value);
+          }}
+          placeholder={"Search in notes"}
+        />
+      </Label>
+      {filter === "by_tags" && (
+        <div className="border rounded-md p-4">
+          <SearchTags
+            filterTags={filterTags}
+            setFilterTags={setFilterTags}
+            tags={tags}
+            tagCount={tags.length.toString()}
+          />
         </div>
       )}
+
+      <div className="w-full min-h-[70vh]">
+        {!notesAreLoading ? <Notes notes={notesReadyToDisplay} /> : "Loading"}
+      </div>
     </div>
   );
 };

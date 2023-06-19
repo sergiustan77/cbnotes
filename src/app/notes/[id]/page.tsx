@@ -21,7 +21,7 @@ const getNote = async (userId: string, noteId: string) => {
 const page = async ({ params: { id } }: Props) => {
   const { userId } = auth();
   const note = await getNote(userId as string, id);
-  console.log(note);
+
   if (!note) {
     notFound();
   }

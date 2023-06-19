@@ -13,8 +13,6 @@ import { Info, Trash2 } from "lucide-react";
 import { Button } from "./ui/button";
 import { useRouter } from "next/navigation";
 
-import deleteTag from "@/lib/note-actions/deleteTag";
-
 type Props = {
   userId: string;
   tag: string;
@@ -23,6 +21,17 @@ type Props = {
 const NoteDropdown = ({ userId, tag }: Props) => {
   const router = useRouter();
 
+  const deleteTag = async () => {
+    const res = await fetch(
+      `http://localhost:3000/api/notes/tags/delete?userId=${userId}&tag=${tag}`,
+      { method: "DELETE" }
+    ).then((r) => {
+      if (r.status === 200) {
+        router.push("/notes/tags");
+        router.refresh();
+      }
+    });
+  };
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -34,14 +43,7 @@ const NoteDropdown = ({ userId, tag }: Props) => {
         <DropdownMenuLabel>Tag Actions</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
-          <DropdownMenuItem
-            onClick={() => {
-              deleteTag(userId, tag).then(() => {
-                router.push("/notes/tags");
-                router.refresh();
-              });
-            }}
-          >
+          <DropdownMenuItem onClick={deleteTag}>
             <Trash2 className="mr-2 h-4 w-4 text-red-600" />
             <span className=" text-red-600">Delete</span>
           </DropdownMenuItem>

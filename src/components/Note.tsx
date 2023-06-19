@@ -1,7 +1,7 @@
 "use client";
 import Note from "@/lib/interfaces/Note";
 import React from "react";
-import { Loader2, Save, X } from "lucide-react";
+import { Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import {
   Card,
@@ -17,14 +17,14 @@ import { Textarea } from "./ui/textarea";
 import { useAuth } from "@clerk/nextjs";
 import { Badge } from "./ui/badge";
 import TagsField from "./TagsField";
-import NoteDropdown from "./NoteDropdown";
 
 import Editor from "./editor/Editor";
-import HTMLReactParser from "html-react-parser";
-import parse, { Element, domToReact } from "html-react-parser";
+
+import parse, { Element } from "html-react-parser";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { Integer } from "neo4j-driver";
+
+import LinkNotes from "./LinkNotes";
+import LinkedNotesView from "./LinkedNotesView";
 
 type Props = {
   note: Note;
@@ -38,8 +38,12 @@ const Note = ({ note, initialTags }: Props) => {
   const [title, setTitle] = React.useState(note.title);
   const [tags, setTags] = React.useState<String[]>(initialTags);
   const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
-  const [linkOpen, setLinkOpen] = React.useState(false);
-  const [link, setLink] = React.useState("");
+  const [update, setUpdate] = React.useState(false);
+
+  const handleSetUpdate = (value: boolean) => {
+    setUpdate(value);
+  };
+
   const { userId } = useAuth();
   const router = useRouter();
 
@@ -64,7 +68,7 @@ const Note = ({ note, initialTags }: Props) => {
     return src;
   };
   return (
-    <Card className="h-fit shadow-none border-none w-full">
+    <Card className="min-h-[100vh] shadow-none border-none w-full">
       <CardHeader className=" py-4 ">
         <CardDescription className=" flex place-content-between items-end text-xs md:text-sm  ">
           {date.toLocaleString("ro-RO", {
@@ -91,10 +95,12 @@ const Note = ({ note, initialTags }: Props) => {
               }}
             />
           )}
+
           {!isEditing ? (
-            <NoteDropdown
-              userId={userId as string}
-              id={note.id}
+            <LinkNotes
+              update={update}
+              setUpdate={handleSetUpdate}
+              note={note}
               setEditing={setIsEditing}
             />
           ) : (
@@ -120,10 +126,20 @@ const Note = ({ note, initialTags }: Props) => {
 
         {!isEditing ? (
           tags && (
-            <div className=" flex gap-1">
-              {initialTags.map((tag, index) => (
-                <Badge key={index}>{tag}</Badge>
-              ))}
+            <div className="">
+              <div className=" flex gap-1">
+                {initialTags.map((tag, index) => (
+                  <Badge key={index}>{tag}</Badge>
+                ))}
+              </div>
+
+              <LinkedNotesView
+                update={update}
+                setUpdate={handleSetUpdate}
+                linkedNotesArray={note.linkedNotes}
+                note={note.id}
+                userId={userId as string}
+              />
             </div>
           )
         ) : (
@@ -147,6 +163,7 @@ const Note = ({ note, initialTags }: Props) => {
               ) {
                 return (
                   <Image
+                    className="rounded-md"
                     loader={imageLoader}
                     alt={node.attribs.src}
                     src={node.attribs.src.toString()}

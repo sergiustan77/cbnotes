@@ -21,6 +21,7 @@ export async function POST(request: NextRequest) {
   }
 
   query += ` OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
+ 
   WITH COLLECT(DISTINCT t.name) AS tags, n
  WITH {title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note
  WITH COLLECT(note) as notes

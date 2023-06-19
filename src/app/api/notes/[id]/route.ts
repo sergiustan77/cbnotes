@@ -24,8 +24,9 @@ export async function GET(
         `MATCH (u:User {userId: $userId})-[:HAS_NOTE]->(n:Note {id: $id})
 
       OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
-  WITH COLLECT(DISTINCT t.name) AS tags, n
-      RETURN { title: n.title, content: n.content, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms"), updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note`,
+      OPTIONAL MATCH (n)-[r:LINKED_TO]->(n_link:Note)<-[:HAS_NOTE]-(u)
+  WITH COLLECT(DISTINCT t.name) AS tags, n, COLLECT(DISTINCT {title: n_link.title, content: n_link.content, id: n_link.id , updated_at: apoc.date.toISO8601(datetime(n_link.updated_at).epochMillis, "ms"), linkDescription: r.description } ) as linkedNotes 
+      RETURN { title: n.title, content: n.content, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms"), updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags, linkedNotes: linkedNotes} as note`,
         { userId, id: noteId }
       )
     );
@@ -35,6 +36,7 @@ export async function GET(
 
     return NextResponse.json(note);
   } catch (error) {
+    // console.log(error);
     return NextResponse.json({
       status: 500,
       message: "Error while getting the note!",

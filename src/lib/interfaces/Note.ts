@@ -5,6 +5,7 @@ interface Note {
   updated_at: string;
   id: string;
   tags: String[];
+  linkedNotes: any[];
 }
 
 export default Note;

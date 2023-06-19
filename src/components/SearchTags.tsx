@@ -3,7 +3,7 @@ import React from "react";
 
 import { Input } from "./ui/input";
 
-import { Tag, Search } from "lucide-react";
+import { Tag } from "lucide-react";
 
 import { Label } from "./ui/label";
 import Tags from "./Tags";

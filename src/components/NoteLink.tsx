@@ -5,6 +5,7 @@ import Image from "next/image";
 import Note from "@/lib/interfaces/Note";
 
 import { cn } from "@/lib/utils";
+import { Youtube } from "lucide-react";
 
 type Props = {
   linkTo: Note;
@@ -41,7 +42,7 @@ const NoteLink = ({
         <CardTitle className="">{linkTo.title}</CardTitle>
       </CardHeader>
       <CardContent className="overflow-hidden text-xs ">
-        <div className="  ">
+        <div className=" break-all">
           {" "}
           {parse(linkTo.content, {
             replace: (domNode) => {
@@ -53,7 +54,43 @@ const NoteLink = ({
               }
 
               if (node.attribs && node.name.startsWith("h")) {
-                return <p> {domToReact(node.children)}</p>;
+                return <p className=""> {domToReact(node.children)}</p>;
+              }
+              if (node.attribs && node.name === "iframe") {
+                let video_id, result, thumbnail;
+
+                if (
+                  (result = node.attribs.src.match(
+                    /youtube\.com.*(\?v=|\/embed\/)(.{11})/
+                  ))
+                ) {
+                  video_id = result.pop();
+                } else if (
+                  (result = node.attribs.src.match(/youtu.be\/(.{11})/))
+                ) {
+                  video_id = result.pop();
+                }
+                thumbnail = `https://i.ytimg.com/vi/${video_id}/hq720.jpg`;
+                return (
+                  <div className="relative my-2">
+                    <div className="absolute flex place-content-center items-center bg-gray-800/30  w-full h-full z-50">
+                      <Youtube className=" text-white rounded-lg " />
+                    </div>
+                    <div className="relative aspect-video rounded-md">
+                      {" "}
+                      <Image
+                        className="rounded-md  "
+                        loader={imageLoader}
+                        alt={node.attribs.src}
+                        src={thumbnail}
+                        fill
+                        style={{
+                          objectFit: "contain",
+                        }}
+                      />
+                    </div>
+                  </div>
+                );
               }
               if (
                 node.attribs &&
@@ -64,8 +101,8 @@ const NoteLink = ({
                     loader={imageLoader}
                     alt={node.attribs.src}
                     src={node.attribs.src.toString()}
-                    width={30}
-                    height={30}
+                    width={parseInt(node.attribs.width) || 300}
+                    height={parseInt(node.attribs.heigth) || 300}
                   />
                 );
               }

@@ -127,7 +127,7 @@ const Note = ({ note, initialTags }: Props) => {
         {!isEditing ? (
           tags && (
             <div className="">
-              <div className=" flex gap-1">
+              <div className=" flex flex-wrap gap-1">
                 {initialTags.map((tag, index) => (
                   <Badge key={index}>{tag}</Badge>
                 ))}
@@ -156,6 +156,17 @@ const Note = ({ note, initialTags }: Props) => {
           {parse(note.content, {
             replace: (domNode) => {
               const node = domNode as Element;
+              if (node.attribs && node.name === "iframe") {
+                return (
+                  <div className="w-full  flex place-content-center">
+                    <iframe
+                      src={node.attribs.src}
+                      className="rounded-md aspect-video w-[60%] my-2 bg-gray-400  dark:bg-gray-800 "
+                      placeholder="Loading"
+                    ></iframe>
+                  </div>
+                );
+              }
 
               if (
                 node.attribs &&
@@ -163,7 +174,7 @@ const Note = ({ note, initialTags }: Props) => {
               ) {
                 return (
                   <Image
-                    className="rounded-md"
+                    className="rounded-sm my-2"
                     loader={imageLoader}
                     alt={node.attribs.src}
                     src={node.attribs.src.toString()}

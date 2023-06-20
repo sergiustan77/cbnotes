@@ -43,27 +43,31 @@ import {
   LinkIcon,
   ImageIcon,
   Scaling,
+  Video,
 } from "lucide-react";
 import Link from "@tiptap/extension-link";
+import Youtube from "@tiptap/extension-youtube";
+import { ImageDialog } from "./ImageDialog";
 
 type Props = {
   editor: any;
   setLink: Function;
   link: string;
+  videoLink: string;
+  setVideoLink: Function;
 };
 
-const MenuBar = ({ editor, link, setLink }: Props) => {
+const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
+  const [isImageFromDevice, setIsImageFromDevice] = React.useState(false);
+  const getEditor = () => {
+    return editor;
+  };
+  if (isImageFromDevice) {
+  }
+
   if (!editor) {
     return null;
   }
-
-  const addImage = () => {
-    const url = window.prompt("URL");
-
-    if (url) {
-      editor.chain().focus().setImage({ src: url }).run();
-    }
-  };
 
   const addLink = () => {
     if (link === null) {
@@ -88,8 +92,22 @@ const MenuBar = ({ editor, link, setLink }: Props) => {
     setLink("");
   };
 
+  const addVideo = () => {
+    if (videoLink === null) {
+      return;
+    }
+
+    // empty
+
+    // update link
+    editor.commands.setYoutubeVideo({
+      src: videoLink,
+    });
+    setVideoLink("");
+  };
+
   return (
-    <div className="flex place-content-center gap-2 p-2">
+    <div className="flex place-content-center flex-wrap gap-2 p-2">
       <Button
         size={"iconCircle"}
         variant={!editor.isActive("codeBlock") ? "outline" : "default"}
@@ -252,9 +270,40 @@ const MenuBar = ({ editor, link, setLink }: Props) => {
         <XCircle className="w-4 h-4" />
       </Button>
 
-      <Button variant={"outline"} size={"iconCircle"} onClick={addImage}>
-        <ImageIcon className="w-4 h-4" />
-      </Button>
+      <ImageDialog editor={getEditor()} />
+
+      <Dialog>
+        <DialogTrigger asChild>
+          <Button variant={"outline"} size={"iconCircle"}>
+            <Video className="w-4 h-4" />
+          </Button>
+        </DialogTrigger>
+        <DialogContent className="sm:max-w-[425px]">
+          <DialogHeader>
+            <DialogTitle>Video URL</DialogTitle>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="">
+              <Label htmlFor="url" className="text-right">
+                URL
+              </Label>
+              <Input
+                id="url"
+                value={videoLink}
+                onChange={(e) => {
+                  setVideoLink(e.target.value);
+                }}
+                className="col-span-3"
+              />
+            </div>
+          </div>
+          <DialogTrigger asChild>
+            <Button onClick={addVideo} type="submit">
+              Add video
+            </Button>
+          </DialogTrigger>
+        </DialogContent>
+      </Dialog>
       <Dialog>
         <DialogTrigger asChild>
           <Button size={"iconCircle"} variant="outline">
@@ -297,18 +346,23 @@ type EditorPros = {
 };
 
 export default ({ setContent, content }: EditorPros) => {
-  const [linkOpen, setLinkOpen] = React.useState(false);
   const [link, setLink] = React.useState("");
+  const [videoLink, setVideoLink] = React.useState("");
 
   const editor = useEditor({
     extensions: [
+      Youtube.configure({
+        HTMLAttributes: {
+          class: "aspect-video w-[60%] bg-gray-400 dark:bg-gray-800 rounded-md",
+        },
+      }),
       HardBreak,
       Link,
       Image.configure({
         inline: false,
 
         HTMLAttributes: {
-          class: "w-fit h-fit bg-yellow-200 ",
+          class: "w-fit h-fit  ",
         },
       }),
       ImageResize.configure({
@@ -337,7 +391,13 @@ export default ({ setContent, content }: EditorPros) => {
 
   return (
     <div>
-      <MenuBar link={link} setLink={setLink} editor={editor} />
+      <MenuBar
+        setVideoLink={setVideoLink}
+        videoLink={videoLink}
+        link={link}
+        setLink={setLink}
+        editor={editor}
+      />
       <EditorContent editor={editor} />
     </div>
   );

@@ -62,7 +62,7 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
     const res = fetch("http://localhost:3000/api/notes/delete", {
       method: "POST",
       body: JSON.stringify({
-        id: note,
+        id: note.id,
         userId: userId,
       }),
     }).then(() => {
@@ -107,15 +107,15 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogContent className="container grid place-content-center ">
-        <DialogHeader className="md:w-full w-[80%] ">
+      <DialogContent className="container grid place-items-center ">
+        <DialogHeader className="w-full ">
           <DialogTitle>Link this note to other notes</DialogTitle>
           <DialogDescription>
             Creating links between notes can improve your organization and
             thinking process!
           </DialogDescription>
         </DialogHeader>
-        <div className=" flex flex-col gap-4 py-4 md:w-full w-[80%] ">
+        <div className=" flex flex-col gap-4 py-4 w-full  ">
           <div className="">
             {" "}
             <Label
@@ -140,7 +140,7 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
                 </div>
               )}
             </Label>
-            <div id="linkTo" className="">
+            <div id="linkTo" className="w-full">
               <LinkNotesSearch
                 update={update}
                 userId={userId as string}
@@ -167,7 +167,7 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
           )}
         </div>
         {linkTo && (
-          <DialogFooter className="md:w-full w-[80%]">
+          <DialogFooter className="w-full ">
             <DialogTrigger className="w-full">
               {" "}
               <Button className="w-full" onClick={linkNotes} type="submit">

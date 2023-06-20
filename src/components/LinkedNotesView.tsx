@@ -9,7 +9,6 @@ import {
 
 import LinkedNoteHoverCard from "./LinkedNoteHoverCard";
 import { Link } from "lucide-react";
-import { useEditor } from "@tiptap/react";
 
 type Props = {
   note: string;

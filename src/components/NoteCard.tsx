@@ -10,14 +10,11 @@ import Note from "@/lib/interfaces/Note";
 
 import Link from "next/link";
 
-import HTMLReactParser, {
-  DOMNode,
-  Element,
-  domToReact,
-} from "html-react-parser";
+import { Element, domToReact } from "html-react-parser";
 import parse from "html-react-parser";
 import { Badge } from "./ui/badge";
 import Image from "next/image";
+import { Youtube } from "lucide-react";
 
 type Props = {
   note: Note;
@@ -52,7 +49,7 @@ const NoteCard = ({ note }: Props) => {
           </div>
         </CardHeader>
 
-        <CardContent className="h-55 pb-24 w-full  overflow-hidden flex place-content-start  ">
+        <CardContent className="h-55 pb-24 w-full  overflow-hidden break-all flex place-content-start  ">
           <div className="overflow-hidden px-2 h-44 w-full ">
             {parse(note.content, {
               replace: (domNode) => {
@@ -62,6 +59,42 @@ const NoteCard = ({ note }: Props) => {
                     <span className="underline">
                       {domToReact(node.children)}
                     </span>
+                  );
+                }
+                if (node.attribs && node.name === "iframe") {
+                  let video_id, result, thumbnail;
+
+                  if (
+                    (result = node.attribs.src.match(
+                      /youtube\.com.*(\?v=|\/embed\/)(.{11})/
+                    ))
+                  ) {
+                    video_id = result.pop();
+                  } else if (
+                    (result = node.attribs.src.match(/youtu.be\/(.{11})/))
+                  ) {
+                    video_id = result.pop();
+                  }
+                  thumbnail = `https://i.ytimg.com/vi/${video_id}/hq720.jpg`;
+                  return (
+                    <div className="relative my-2">
+                      <div className="absolute flex place-content-center items-center bg-gray-800/30  w-full h-full z-50">
+                        <Youtube className=" text-white rounded-lg " />
+                      </div>
+                      <div className="relative aspect-video rounded-md">
+                        {" "}
+                        <Image
+                          className="rounded-md  "
+                          loader={imageLoader}
+                          alt={node.attribs.src}
+                          src={thumbnail}
+                          fill
+                          style={{
+                            objectFit: "contain",
+                          }}
+                        />
+                      </div>
+                    </div>
                   );
                 }
 

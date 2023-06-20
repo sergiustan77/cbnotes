@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
     await session.close();
     return NextResponse.json({
       status: 200,
-      message: "Note deleted!",
+      message: "Note deleted! Id:" + id,
     });
   } catch (error) {
     await session.close();

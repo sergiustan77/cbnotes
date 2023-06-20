@@ -10,5 +10,7 @@ The app was created using the following technologies:
 - [Clerk](https://clerk.com/?utm_source=www.google.com&utm_medium=referral&utm_campaign=none)
 - [shandcn/ui](https://ui.shadcn.com/)
 - [TailwindCSS](https://tailwindcss.com/docs/guides/nextjs)
+- [TipTap](https://tiptap.dev/)
+- [Cloudinary](https://cloudinary.com/)
 
 

@@ -49,7 +49,7 @@ const Note = ({ note, initialTags }: Props) => {
   const router = useRouter();
 
   const updateNote = async () => {
-    const res = await fetch("http://localhost:3000/api/notes/update", {
+    const res = await fetch("/api/notes/update", {
       method: "POST",
       body: JSON.stringify({
         id: note.id,

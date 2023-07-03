@@ -43,7 +43,7 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
   const { userId } = useAuth();
   const router = useRouter();
   const linkNotes = async () => {
-    const res = fetch("http://localhost:3000/api/notes/link", {
+    const res = fetch("/api/notes/link", {
       method: "POST",
       body: JSON.stringify({
         note: note.id,
@@ -59,7 +59,7 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
   };
 
   const deleteNoteHandle = async () => {
-    const res = fetch("http://localhost:3000/api/notes/delete", {
+    const res = fetch("/api/notes/delete", {
       method: "POST",
       body: JSON.stringify({
         id: note.id,

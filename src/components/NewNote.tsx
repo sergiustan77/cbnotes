@@ -23,7 +23,7 @@ const NewNote = ({}: Props) => {
   const router = useRouter();
 
   const newNote = async () => {
-    const res = await fetch("http://localhost:3000/api/notes/new", {
+    const res = await fetch("/api/notes/new", {
       method: "POST",
       body: JSON.stringify({
         userId: userId as string,

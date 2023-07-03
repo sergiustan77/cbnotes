@@ -42,7 +42,7 @@ const LinkNotesSearch = ({
 
   const filterAndSortNotes = async () => {
     const allNotes = await fetch(
-      `http://localhost:3000/api/notes/link/not-linked?userId=${userId}&note=${note.id}`
+      `/api/notes/link/not-linked?userId=${userId}&note=${note.id}`
     );
     const notesData = await allNotes.json().then((notes) => {
       setNotes(notes);
@@ -52,7 +52,7 @@ const LinkNotesSearch = ({
 
   const getLinkedNotes = async () => {
     const res = await fetch(
-      `http://localhost:3000/api/notes/link/not-linked?note=${note.id}&userId=${userId}`
+      `/api/notes/link/not-linked?note=${note.id}&userId=${userId}`
     );
 
     const notes = await res.json().then((notes) => {

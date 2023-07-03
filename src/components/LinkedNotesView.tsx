@@ -28,9 +28,7 @@ const LinkedNotesView = ({
   const [linkedNotes, setLinkedNotes] = React.useState(linkedNotesArray);
 
   const setNotes = async () => {
-    const res = await fetch(
-      `http://localhost:3000/api/notes/link?note=${note}&userId=${userId}`
-    );
+    const res = await fetch(`/api/notes/link?note=${note}&userId=${userId}`);
 
     const notes = await res.json().then((notes) => {
       setLinkedNotes(notes);

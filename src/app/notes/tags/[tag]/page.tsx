@@ -39,9 +39,7 @@ const getNotesByTag = async (userId: string, tag: string) => {
   //   });
   // }
 
-  const res = await fetch(
-    `http://localhost:3000/api/notes/tags/tag?userId=${userId}&tag=${tag}`
-  );
+  const res = await fetch(`/api/notes/tags/tag?userId=${userId}&tag=${tag}`);
 
   return await res.json();
 };

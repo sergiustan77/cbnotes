@@ -36,7 +36,7 @@ const LinkedNoteHoverCard = ({
   setUpdate,
 }: Props) => {
   const removeLink = async () => {
-    const res = await fetch("http://localhost:3000/api/notes/link/remove", {
+    const res = await fetch("/api/notes/link/remove", {
       method: "POST",
       body: JSON.stringify({
         userId: userId,

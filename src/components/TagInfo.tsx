@@ -23,7 +23,7 @@ const NoteDropdown = ({ userId, tag }: Props) => {
 
   const deleteTag = async () => {
     const res = await fetch(
-      `http://localhost:3000/api/notes/tags/delete?userId=${userId}&tag=${tag}`,
+      `/api/notes/tags/delete?userId=${userId}&tag=${tag}`,
       { method: "DELETE" }
     ).then((r) => {
       if (r.status === 200) {

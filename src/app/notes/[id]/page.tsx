@@ -11,9 +11,7 @@ type Props = {
 };
 
 const getNote = async (userId: string, noteId: string) => {
-  const res = await fetch(
-    `http://localhost:3000/api/notes/${noteId}?userId=${userId}`
-  );
+  const res = await fetch(`/api/notes/${noteId}?userId=${userId}`);
 
   return await res.json();
 };

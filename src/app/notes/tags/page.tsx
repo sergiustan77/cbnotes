@@ -8,14 +8,11 @@ import React from "react";
 type Props = {};
 
 const getTags = async (userId: string) => {
-  const res = await fetch(
-    `http://localhost:3000/api/notes/tags?userId=${userId}`,
-    {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    }
-  );
+  const res = await fetch(`/api/notes/tags?userId=${userId}`, {
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 
   return await res.json();
 };

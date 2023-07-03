@@ -45,19 +45,16 @@ const SearchNotes = ({ notes, tags }: Props) => {
   const filterAndSortNotes = async () => {
     setNotesAreLoading(true);
 
-    const filteredAndSortedNotes = await fetch(
-      "http://localhost:3000/api/notes/sort",
-      {
-        method: "POST",
-        body: JSON.stringify({
-          userId: userId,
-          order: sortBy,
-          date: date,
-          title: title,
-          tags: filterTags,
-        }),
-      }
-    );
+    const filteredAndSortedNotes = await fetch("/api/notes/sort", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: userId,
+        order: sortBy,
+        date: date,
+        title: title,
+        tags: filterTags,
+      }),
+    });
 
     const notes = await filteredAndSortedNotes.json().then((notes) => {
       setNotesAreLoading(false);

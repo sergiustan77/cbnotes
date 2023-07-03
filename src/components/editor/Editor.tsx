@@ -345,7 +345,7 @@ type EditorPros = {
   content: string;
 };
 
-export default ({ setContent, content }: EditorPros) => {
+const Editor = ({ setContent, content }: EditorPros) => {
   const [link, setLink] = React.useState("");
   const [videoLink, setVideoLink] = React.useState("");
 
@@ -402,3 +402,5 @@ export default ({ setContent, content }: EditorPros) => {
     </div>
   );
 };
+
+export default Editor;

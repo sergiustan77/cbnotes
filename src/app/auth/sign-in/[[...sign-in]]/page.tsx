@@ -20,7 +20,7 @@ const Page = () => {
               "text-card-foreground text-lg font-semibold leading-none tracking-tight",
             headerSubtitle: "text-sm text-muted-foreground",
             alternativeMethodsBlockButton:
-              "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground text-primary h-10 py-2 px-4",
+              "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input bg-white hover:bg-accent-foreground  text-muted-foreground h-10 py-2 px-4",
             footer: "flex items-center ",
             formFieldLabel: "text-card-foreground",
             formFieldErrorText: "text-red-500",
@@ -40,7 +40,7 @@ const Page = () => {
             formButtonPrimary:
               "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background bg-primary text-primary-foreground hover:bg-primary/90 h-10 py-2 px-4",
             socialButtonsBlockButton__google:
-              "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent hover:text-accent-foreground text-primary h-10 py-2 px-4",
+              "inline-flex items-center justify-center rounded-md text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none ring-offset-background border border-input hover:bg-accent-foreground bg-white  text-muted-foreground h-10 py-2 px-4",
             footerActionText: "text-muted-foreground",
             footerActionLink:
               "text-primary font-semibold hover:text-primary/90",

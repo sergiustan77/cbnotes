@@ -42,10 +42,6 @@ h4 {
   @apply scroll-m-20 text-xl font-semibold tracking-tight;
 }
 
-p {
-  @apply leading-7 mt-0;
-}
-
 code {
   background-color: rgba(#616161, 0.1);
   color: #616161;
@@ -79,4 +75,8 @@ hr {
   border: none;
   border-top: 2px solid rgba(#0d0d0d, 0.1);
   margin: 2rem 0;
+}
+
+a {
+  @apply underline text-accent-foreground;
 }

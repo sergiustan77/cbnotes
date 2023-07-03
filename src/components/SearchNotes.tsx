@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 
 import { Input } from "./ui/input";
 
-import { Search, Plus, Tag } from "lucide-react";
+import { Search, Plus, Tag, Loader2, TagsIcon } from "lucide-react";
 import Note from "@/lib/interfaces/Note";
 import Notes from "./Notes";
 import { Label } from "./ui/label";
@@ -30,7 +30,7 @@ const SearchNotes = ({ notes, tags }: Props) => {
   const [filterTags, setFilterTags] = React.useState<string[]>([]);
 
   const [displayedNotes, setDisplayedNotes] = React.useState([]);
-  const [notesAreLoading, setNotesAreLoading] = React.useState(false);
+  const [notesAreLoading, setNotesAreLoading] = React.useState(true);
   const { userId } = useAuth();
 
   const filterNoteSuggestions = (array: Note[]) => {
@@ -78,35 +78,12 @@ const SearchNotes = ({ notes, tags }: Props) => {
       <div className="flex w-full place-content-between items-center gap-1">
         <div className="flex gap-1 scroll-m-20 text-2xl font-semibold tracking-tight items-end">
           {" "}
-          <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight  ">
+          <h1 className="scroll-m-20 text-xl md:text-4xl font-extrabold tracking-tight  ">
             All Notes
           </h1>
         </div>
         <div className="flex items-end gap-2 ">
           <div className="flex gap-2 items-end">
-            <Link
-              className={cn(
-                buttonVariants({
-                  variant: "default",
-                  size: "sm",
-                }),
-                "flex gap-1"
-              )}
-              href={`/notes/new-note`}
-            >
-              <Plus className="h-4 w-4" /> New
-            </Link>
-            <Link
-              className={cn(
-                buttonVariants({
-                  variant: "ghost",
-                  size: "icon",
-                })
-              )}
-              href={`/notes/tags`}
-            >
-              <Tag />
-            </Link>
             <TagFilter filter={filter} setFilter={setFilter} />
             <SortFilter
               date={date}
@@ -117,7 +94,7 @@ const SearchNotes = ({ notes, tags }: Props) => {
               setTitle={setTitle}
             />
           </div>
-          <div className="text-lg w-20  flex place-content-end">
+          <div className="text-sm   text-right md:text-lg flex place-content-end">
             {" "}
             {displayedNotes.length} found
           </div>
@@ -151,7 +128,13 @@ const SearchNotes = ({ notes, tags }: Props) => {
       )}
 
       <div className="w-full min-h-[70vh]">
-        {!notesAreLoading ? <Notes notes={notesReadyToDisplay} /> : "Loading"}
+        {!notesAreLoading ? (
+          <Notes notes={notesReadyToDisplay} />
+        ) : (
+          <div className="w-full h-full grid place-items-center">
+            <Loader2 className=" animate-spin" />
+          </div>
+        )}
       </div>
     </div>
   );

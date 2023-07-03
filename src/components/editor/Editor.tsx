@@ -107,7 +107,7 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
   };
 
   return (
-    <div className="flex place-content-center flex-wrap gap-2 p-2">
+    <div className="flex place-content-center flex-wrap gap-2 p-2 w-full">
       <Button
         size={"iconCircle"}
         variant={!editor.isActive("codeBlock") ? "outline" : "default"}
@@ -390,7 +390,7 @@ export default ({ setContent, content }: EditorPros) => {
   });
 
   return (
-    <div>
+    <div className="w-full">
       <MenuBar
         setVideoLink={setVideoLink}
         videoLink={videoLink}

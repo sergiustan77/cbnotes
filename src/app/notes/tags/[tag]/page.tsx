@@ -1,65 +1,70 @@
-"use client";
-import React, { useEffect } from "react";
+import React from "react";
+import { Suspense } from "react";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, Tag } from "lucide-react";
+import { Loader2, Tag, TagsIcon } from "lucide-react";
 import Notes from "@/components/Notes";
 
-import { useAuth } from "@clerk/nextjs";
-import { useParams } from "next/navigation";
+import { auth } from "@clerk/nextjs";
 
 import TagInfo from "@/components/TagInfo";
+import { driver } from "@/lib/neo4j";
+import Note from "@/lib/interfaces/Note";
 
-type Props = {};
-
-const page = (props: Props) => {
-  const [notes, setNotes] = React.useState([]);
-  const [loading, setLoading] = React.useState(true);
-  const { tag } = useParams();
-  const { userId } = useAuth();
-  const getNotesByTag = async () => {
-    const res = await fetch(
-      `http://localhost:3000/api/notes/tags/tag?tag=${decodeURI(
-        tag
-      )}&userId=${userId}`
-    );
-
-    const notesData = await res.json().then((notes) => {
-      setNotes(notes);
-      setLoading(false);
-    });
+type Props = {
+  params: {
+    tag: string;
   };
-  useEffect(() => {
-    setLoading(true);
-    getNotesByTag();
-  }, []);
+};
+const getNotesByTag = async (userId: string, tag: string) => {
+  // const session = driver.session();
+
+  // try {
+  //   const res = await session.executeRead((tx) =>
+  //     tx.run(
+  //       `MATCH (u:User {userId: $userId})-[r:HAS_TAG]->(t:Tag {name: $tag})<-[:TAGGED_IN]-(n:Note)
+  //     WITH COLLECT(t.name) as tags, n
+  //       RETURN DISTINCT { title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags } as note`,
+  //       { userId, tag }
+  //     )
+  //   );
+
+  //   await session.close();
+  //   const notes = res.records.map((r) => r.get("note"));
+  //   return notes;
+  // } catch (error) {
+  //   return JSON.stringify({
+  //     status: 500,
+  //     message: "Internal server error",
+  //     error: error,
+  //   });
+  // }
+
+  const res = await fetch(
+    `http://localhost:3000/api/notes/tags/tag?userId=${userId}&tag=${tag}`
+  );
+
+  return await res.json();
+};
+const page = async ({ params: { tag } }: Props) => {
+  const { userId } = auth();
+  const notes: any = await getNotesByTag(userId as string, decodeURI(tag));
 
   return (
-    <div className="container mx-auto my-6">
-      <h1 className="text-4xl w-full flex place-content-between md:flex-row  items-end h-full  mb-2 ">
-        <div className="scroll-m-20 text-4xl font-extrabold tracking-tight flex gap-4">
-          Tagged in:
-          <Badge className="flex items-center gap-2 text-xl">
-            <Tag />
-            {decodeURI(tag)}
-          </Badge>
-        </div>
+    <div className="container mx-auto my-6 h-full">
+      <h1 className="text-4xl w-full flex place-content-between md:flex-row  items-center h-full  mb-2  ">
+        <Badge className="scroll-m-20 text-4xl font-extrabold tracking-tight grid place-items-center  gap-2  px-4 py-2">
+          {" "}
+          <h1 className=""> {decodeURI(tag)}</h1>
+        </Badge>
 
-        <div className="text-xl flex gap-4">
-          <div className="text-muted-foreground">
-            {notes.length > 1 ? (
-              <div>{notes.length} notes found</div>
-            ) : (
-              <div>{notes.length} note found</div>
-            )}
-          </div>
+        <div className="text-xl flex gap-4  items-end">
           <TagInfo userId={userId as string} tag={decodeURI(tag)} />
         </div>
       </h1>
-      {loading ? (
-        <Loader2 className=" animate-spin" />
-      ) : (
+
+      <Suspense fallback={<Loader2 className=" animate-spin" />}>
         <Notes notes={notes} />
-      )}
+      </Suspense>
     </div>
   );
 };

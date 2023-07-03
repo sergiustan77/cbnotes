@@ -9,14 +9,16 @@ export async function POST(request: NextRequest) {
 
   let query = ` 
 
-  MERGE (u:User {userId: $userId})
+  MATCH (u:User {userId: $userId})
+
   CREATE (n:Note {title: $title, content: $content, id: $id, created_at: datetime({timezone: 'Europe/Bucharest'}), updated_at: datetime({timezone: 'Europe/Bucharest'}) })
       CREATE (u)-[:HAS_NOTE]->(n)
   
   WITH u, n
-  UNWIND $tags as tag
-  MERGE (u)-[:HAS_TAG]->(t:Tag {name: tag})
-  MERGE (t)<-[:TAGGED_IN]-(n)
+  UNWIND $tags as tag_name
+  MERGE (tag:Tag {name: tag_name, user: $userId})<-[:HAS_TAG]-(u)
+  MERGE (n)-[:TAGGED_IN]->(tag)
+  MERGE (u)-[:HAS_TAG]->(tag)
   `;
 
   try {
@@ -37,6 +39,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     await session.close();
+    console.log(error);
     return NextResponse.json({
       status: 500,
       message: "An error occured while creating your note!",

@@ -1,3 +1,4 @@
+"use client";
 import React from "react";
 import {
   Card,
@@ -77,7 +78,7 @@ const NoteCard = ({ note }: Props) => {
                   }
                   thumbnail = `https://i.ytimg.com/vi/${video_id}/hq720.jpg`;
                   return (
-                    <div className="relative my-2">
+                    <div className="relative my-2 w-full">
                       <div className="absolute flex place-content-center items-center bg-gray-800/30  w-full h-full z-50">
                         <Youtube className=" text-white rounded-lg " />
                       </div>

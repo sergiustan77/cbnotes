@@ -3,6 +3,7 @@ import Note from "@/lib/interfaces/Note";
 import React from "react";
 import { Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
+
 import {
   Card,
   CardContent,
@@ -20,7 +21,7 @@ import TagsField from "./TagsField";
 
 import Editor from "./editor/Editor";
 
-import parse, { Element } from "html-react-parser";
+import parse, { Element, domToReact } from "html-react-parser";
 import Image from "next/image";
 
 import LinkNotes from "./LinkNotes";
@@ -68,9 +69,9 @@ const Note = ({ note, initialTags }: Props) => {
     return src;
   };
   return (
-    <Card className="min-h-[100vh] shadow-none border-none w-full">
-      <CardHeader className=" py-4 ">
-        <CardDescription className=" flex place-content-between items-end text-xs md:text-sm  ">
+    <div className="min-h-[100vh] pb-4  w-full container">
+      <div className=" py-4 ">
+        <div className=" flex place-content-between items-end text-xs md:text-sm  ">
           {date.toLocaleString("ro-RO", {
             day: "numeric",
             month: "long",
@@ -81,9 +82,9 @@ const Note = ({ note, initialTags }: Props) => {
             hour: "numeric",
             minute: "numeric",
           })}
-        </CardDescription>
+        </div>
 
-        <CardTitle className=" flex place-content-between scroll-m-20 text-xl font-extrabold tracking-tight md:text-4xl">
+        <h1 className=" flex place-content-between scroll-m-20 text-xl font-extrabold tracking-tight md:text-4xl">
           {!isEditing ? (
             note.title
           ) : (
@@ -122,7 +123,7 @@ const Note = ({ note, initialTags }: Props) => {
               </Button>
             </div>
           )}
-        </CardTitle>
+        </h1>
 
         {!isEditing ? (
           tags && (
@@ -150,9 +151,9 @@ const Note = ({ note, initialTags }: Props) => {
             setTagsToRemove={setTagsToRemove}
           />
         )}
-      </CardHeader>
+      </div>
       {!isEditing ? (
-        <CardContent className="">
+        <div className="">
           {parse(note.content, {
             replace: (domNode) => {
               const node = domNode as Element;
@@ -165,6 +166,93 @@ const Note = ({ note, initialTags }: Props) => {
                       placeholder="Loading"
                     ></iframe>
                   </div>
+                );
+              }
+              if (node.attribs && node.name === "h1") {
+                return (
+                  <h1 className="scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl">
+                    {domToReact(node.children)}
+                  </h1>
+                );
+              }
+
+              if (node.attribs && node.name === "h2") {
+                return (
+                  <h2 className=" scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight transition-colors first:mt-0">
+                    {domToReact(node.children)}
+                  </h2>
+                );
+              }
+              if (node.attribs && node.name === "h3") {
+                return (
+                  <h3 className=" scroll-m-20 text-2xl font-semibold tracking-tight">
+                    {domToReact(node.children)}
+                  </h3>
+                );
+              }
+
+              if (node.attribs && node.name === "h4") {
+                return (
+                  <h4 className=" scroll-m-20 text-xl font-semibold tracking-tight">
+                    {domToReact(node.children)}
+                  </h4>
+                );
+              }
+
+              if (node.attribs && node.name === "pre") {
+                return (
+                  <pre className="bg-primary text-background font-mono p-[0.75rem 1rem] rounded-[0.5rem]">
+                    {domToReact(node.children)}
+                  </pre>
+                );
+              }
+
+              if (node.attribs && node.name === "code") {
+                return (
+                  <code className="bg-primary/80 text-background/80 font-mono  rounded-[0.5rem]">
+                    {domToReact(node.children)}
+                  </code>
+                );
+              }
+
+              if (node.attribs && node.name === "blockquote") {
+                return (
+                  <blockquote className="mt-6 border-l-2 pl-6 italic">
+                    {domToReact(node.children)}
+                  </blockquote>
+                );
+              }
+              if (node.attribs && node.name === "hr") {
+                return (
+                  <hr className=" border-none border-t-[2px] m-x-[2rem]">
+                    {domToReact(node.children)}
+                  </hr>
+                );
+              }
+
+              if (node.attribs && node.name === "a") {
+                return (
+                  <a
+                    href={node.attribs.href}
+                    className="underline text-accent-foreground "
+                  >
+                    {domToReact(node.children)}
+                  </a>
+                );
+              }
+
+              if (node.attribs && node.name === "ul") {
+                return (
+                  <ul className="py-[1.5rem] list-disc">
+                    {domToReact(node.children)}
+                  </ul>
+                );
+              }
+              if (node.attribs && node.name === "ol") {
+                return (
+                  <ol className="py-[1.5rem] list-decimal">
+                    {domToReact(node.children)}
+                  </ol>
                 );
               }
 
@@ -185,13 +273,13 @@ const Note = ({ note, initialTags }: Props) => {
               }
             },
           })}
-        </CardContent>
+        </div>
       ) : (
-        <CardContent className="">
+        <div className="w-full ">
           <Editor content={content} setContent={setContent} />
-        </CardContent>
+        </div>
       )}
-    </Card>
+    </div>
   );
 };
 

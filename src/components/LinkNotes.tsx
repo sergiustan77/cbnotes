@@ -130,6 +130,7 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
                   <Button
                     onClick={() => {
                       setLinkTo(undefined);
+                      setLinkToDescription("");
                     }}
                     className="h-6 w-6"
                     variant={"ghost"}

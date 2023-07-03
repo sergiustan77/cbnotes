@@ -11,8 +11,9 @@ export async function GET(request: NextRequest) {
   try {
     const res = await session.executeRead((tx) =>
       tx.run(
-        `MATCH (u:User {userId: $userId})-[r:HAS_TAG]-(t:Tag {name: $tag})<-[:TAGGED_IN]-(n:Note)
-      WITH COLLECT(t.name) as tags, n
+        `MATCH (u:User {userId: $userId})-[r:HAS_TAG]->(t:Tag {name: $tag})<-[:TAGGED_IN]-(n:Note)
+        MATCH (n)-[:TAGGED_IN]->(note_tag:Tag)<-[:HAS_TAG]-(u)
+      WITH COLLECT(note_tag.name) as tags, n, t
         RETURN DISTINCT { title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags } as note`,
         { userId, tag }
       )
@@ -25,7 +26,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     return NextResponse.json({
       status: 500,
-      message: "Error while getting the tags!",
+      message: "Error while getting the tag's notes!",
     });
   }
 }

@@ -5,7 +5,7 @@ const Page = () => {
   return (
     <div className="container mx-auto flex justify-center items-center h-[90vh]">
       <SignUp
-        redirectUrl={"/notes"}
+        afterSignUpUrl={"/create-user"}
         signInUrl={"/auth/sign-in"}
         appearance={{
           elements: {
@@ -29,6 +29,10 @@ const Page = () => {
             footerActionText: "text-muted-foreground",
             footerActionLink:
               "text-primary font-semibold hover:text-primary/90",
+            formFieldSuccessText__password: "text-green-700",
+
+            formFieldHintText__firstName: "text-muted-foreground",
+            formFieldHintText__lastName: "text-muted-foreground",
           },
           layout: {
             socialButtonsPlacement: "bottom",

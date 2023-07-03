@@ -39,7 +39,6 @@ const LinkedNotesView = ({
 
   useEffect(() => {
     setNotes();
-    console.log(update);
   }, [update]);
   return (
     <Accordion type="single" collapsible className="w-full">

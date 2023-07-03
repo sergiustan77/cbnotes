@@ -1,9 +1,10 @@
 "use client";
+import { cn } from "@/lib/utils";
 import ThemeToggle from "./ui/ThemeToggle";
 import { buttonVariants } from "./ui/button";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
-import { PlusIcon, StickyNote, Tag } from "lucide-react";
+import { PlusIcon, StickyNote, Tag, TagsIcon } from "lucide-react";
 import Link from "next/link";
 type Props = {};
 
@@ -20,6 +21,17 @@ const Nav = (props: Props) => {
         <div className="">
           <SignedIn>
             <div className="flex gap-4">
+              <Link
+                className={cn(
+                  buttonVariants({
+                    variant: "ghost",
+                    size: "icon",
+                  })
+                )}
+                href={`/notes/tags`}
+              >
+                <TagsIcon />
+              </Link>
               <Link
                 href={"/notes"}
                 className={buttonVariants({

@@ -16,9 +16,8 @@ export async function POST(request: NextRequest) {
         SET n.updated_at = datetime({timezone: 'Europe/Bucharest'})
       WITH n, u
         UNWIND $tags as tag_name
-      MERGE (tag:Tag {name: tag_name})
+        MERGE (tag:Tag {name: tag_name, user: $userId})<-[:HAS_TAG]-(u)
       MERGE (n)-[:TAGGED_IN]->(tag)
-      MERGE (u)-[:HAS_TAG]->(tag)
       
         `,
         { userId, id, title, content, tags }
@@ -47,7 +46,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     await session.close();
-
+    console.log(error);
     return NextResponse.json({
       status: 500,
       message: "An error occured while updating your note!",

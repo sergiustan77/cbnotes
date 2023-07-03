@@ -8,7 +8,6 @@ import Note from "@/lib/interfaces/Note";
 
 import { Label } from "./ui/label";
 
-import { useAuth } from "@clerk/nextjs";
 import NoteLink from "./NoteLink";
 import { ScrollArea } from "./ui/scroll-area";
 
@@ -34,34 +33,26 @@ const LinkNotesSearch = ({
   const [notesAreLoading, setNotesAreLoading] = React.useState(false);
 
   const filterNoteSuggestions = (array: Note[]) => {
-    return array
-      .filter(
-        (el: any) =>
-          el.content.toLowerCase().includes(query.toLocaleLowerCase()) ||
-          el.title.toLowerCase().includes(query.toLocaleLowerCase()) ||
-          el.tags.some((t: any) =>
-            t.toLowerCase().includes(query.toLowerCase())
-          )
-      )
-      .filter(
-        (n: Note) =>
-          !linkedNotes.find((linkedNote: any) => linkedNote.id === n.id)
-      );
+    return array.filter(
+      (el: any) =>
+        el.title.toLowerCase().includes(query.toLocaleLowerCase()) ||
+        el.content.toLowerCase().includes(query.toLocaleLowerCase())
+    );
   };
 
   const filterAndSortNotes = async () => {
     const allNotes = await fetch(
-      `http://localhost:3000/api/notes?userId=${userId}`
+      `http://localhost:3000/api/notes/link/not-linked?userId=${userId}&note=${note.id}`
     );
     const notesData = await allNotes.json().then((notes) => {
-      setNotes(notes.notes);
+      setNotes(notes);
       setNotesAreLoading(false);
     });
   };
 
   const getLinkedNotes = async () => {
     const res = await fetch(
-      `http://localhost:3000/api/notes/link?note=${note.id}&userId=${userId}`
+      `http://localhost:3000/api/notes/link/not-linked?note=${note.id}&userId=${userId}`
     );
 
     const notes = await res.json().then((notes) => {

@@ -38,9 +38,9 @@ const NewNote = ({}: Props) => {
   };
 
   return (
-    <Card className="h-fit shadow-none border-none w-full">
-      <CardHeader className="py-4 gap-2">
-        <CardTitle className="flex place-content-between scroll-m-20 text-xl font-extrabold tracking-tight md:text-4xl">
+    <div className="h-fit  border-none w-full container">
+      <div className="py-4 gap-2">
+        <h1 className="flex place-content-between scroll-m-20 text-xl font-extrabold tracking-tight md:text-4xl">
           <Textarea
             className="mr-4 h-auto md:h-10 resize-none"
             value={title}
@@ -64,7 +64,7 @@ const NewNote = ({}: Props) => {
               <Save />
             </Button>
           </div>
-        </CardTitle>
+        </h1>
 
         <TagsField
           tags={tags}
@@ -72,19 +72,11 @@ const NewNote = ({}: Props) => {
           setTagsToRemove={setTagsToRemove}
           setTags={setTags}
         />
-      </CardHeader>
-      <CardContent className="">
+      </div>
+      <div className="w-full ">
         <Editor content={content} setContent={setContent} />
-        {/* <Textarea
-          className="h-full resize-none"
-          value={content}
-          onChange={(e) => {
-            setContent(e.target.value);
-          }}
-          placeholder="Set your heart ablaze!"
-        /> */}
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   );
 };
 

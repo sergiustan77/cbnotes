@@ -16,32 +16,33 @@ type Props = {
   };
 };
 const getNotesByTag = async (userId: string, tag: string) => {
-  // const session = driver.session();
+  const session = driver.session();
 
-  // try {
-  //   const res = await session.executeRead((tx) =>
-  //     tx.run(
-  //       `MATCH (u:User {userId: $userId})-[r:HAS_TAG]->(t:Tag {name: $tag})<-[:TAGGED_IN]-(n:Note)
-  //     WITH COLLECT(t.name) as tags, n
-  //       RETURN DISTINCT { title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags } as note`,
-  //       { userId, tag }
-  //     )
-  //   );
+  try {
+    const res = await session.executeRead((tx) =>
+      tx.run(
+        `MATCH (u:User {userId: $userId})-[r:HAS_TAG]->(t:Tag {name: $tag})<-[:TAGGED_IN]-(n:Note)
+        MATCH (n)-[:TAGGED_IN]->(note_tag:Tag)<-[:HAS_TAG]-(u)
+        WITH COLLECT(note_tag.name) as tags, n, t
+          RETURN DISTINCT { title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags } as note`,
+        { userId, tag }
+      )
+    );
 
-  //   await session.close();
-  //   const notes = res.records.map((r) => r.get("note"));
-  //   return notes;
-  // } catch (error) {
-  //   return JSON.stringify({
-  //     status: 500,
-  //     message: "Internal server error",
-  //     error: error,
-  //   });
-  // }
+    await session.close();
+    const notes = res.records.map((r) => r.get("note"));
+    return notes;
+  } catch (error) {
+    return JSON.stringify({
+      status: 500,
+      message: "Internal server error",
+      error: error,
+    });
+  }
 
-  const res = await fetch(`/api/notes/tags/tag?userId=${userId}&tag=${tag}`);
+  // const res = await fetch(`/api/notes/tags/tag?userId=${userId}&tag=${tag}`);
 
-  return await res.json();
+  // return await res.json();
 };
 const page = async ({ params: { tag } }: Props) => {
   const { userId } = auth();

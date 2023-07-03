@@ -46,7 +46,8 @@ export function ImageDialog({ editor }: Props) {
     )
       .then((r) => r.json())
       .then((data) => {
-        editor.chain().focus().setImage({ src: data.url }).run();
+        console.log(data);
+        editor.chain().focus().setImage({ src: data.secure_url }).run();
       });
   };
   const addImageURL = () => {

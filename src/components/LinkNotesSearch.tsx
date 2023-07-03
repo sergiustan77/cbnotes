@@ -92,9 +92,10 @@ const LinkNotesSearch = ({
               <div className="w-full flex place-content-center md:place-content-evenly gap-2 flex-wrap">
                 {" "}
                 {notesReadyToDisplay.map(
-                  (n) =>
+                  (n, i) =>
                     n.id != note.id && (
                       <NoteLink
+                        key={i}
                         selectedNote={selectedNote}
                         setSelectedNote={setSelectedNote}
                         userId={userId as string}

@@ -29,10 +29,10 @@ const page = async (props: Props) => {
       </h1>
       <div className="flex flex-wrap rounded-md gap-2 md:gap-4 my-4  ">
         {tags.map(
-          (t: any, i: number) =>
+          (t: any) =>
             t.tag && (
               <Link
-                key={i}
+                key={t.tag}
                 className="w-fit h-fit"
                 href={`/notes/tags/${t.tag}`}
               >

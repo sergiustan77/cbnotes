@@ -20,9 +20,9 @@ const Tags = ({ tags, count, setFilterTags, filterTags }: Props) => {
           {tags.length > 0 ? (
             <ScrollArea className="w-full h-20 min-h-20 max-h-20 md:h-fit md:max-h-fit ">
               <div className=" w-full h-32 min-h-20 max-h-20  md:max-h-32 flex flex-wrap place-content-start gap-1">
-                {tags.map((t, i) => (
+                {tags.map((t) => (
                   <TagComponent
-                    key={i}
+                    key={t.toString()}
                     filterTags={filterTags}
                     setFilterTags={setFilterTags}
                     name={t.toString()}

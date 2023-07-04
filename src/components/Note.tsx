@@ -69,7 +69,7 @@ const Note = ({ note, initialTags }: Props) => {
     return src;
   };
   return (
-    <div className="min-h-[100vh] pb-4  w-full container">
+    <div className="min-h-[100vh] pb-4  w-full ">
       <div className=" py-4 ">
         <div className=" flex place-content-between items-end text-xs md:text-sm  ">
           {date.toLocaleString("ro-RO", {
@@ -89,7 +89,8 @@ const Note = ({ note, initialTags }: Props) => {
             note.title
           ) : (
             <Textarea
-              className="mr-4 h-auot md:h-10 resize-none "
+              placeholder="Title"
+              className="mr-4 h-fit  resize-none text-4xl "
               value={title}
               onChange={(e) => {
                 setTitle(e.target.value);

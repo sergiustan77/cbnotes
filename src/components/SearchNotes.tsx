@@ -128,7 +128,7 @@ const SearchNotes = ({ notes, tags }: Props) => {
         {!notesAreLoading ? (
           <Notes notes={notesReadyToDisplay} />
         ) : (
-          <div className="w-full h-full grid place-items-center">
+          <div className="w-full min-h-[70vh] h-full grid place-items-center">
             <Loader2 className=" animate-spin" />
           </div>
         )}

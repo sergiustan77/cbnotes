@@ -107,7 +107,7 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
           </DropdownMenuGroup>
         </DropdownMenuContent>
       </DropdownMenu>
-      <DialogContent className="container grid place-items-center ">
+      <DialogContent className="w-full grid place-items-center ">
         <DialogHeader className="w-full ">
           <DialogTitle>Link this note to other notes</DialogTitle>
           <DialogDescription>

@@ -38,7 +38,7 @@ const NewNote = ({}: Props) => {
   };
 
   return (
-    <div className="h-fit  border-none w-full container">
+    <div className="h-fit  border-none w-full ">
       <div className="py-4 gap-2">
         <h1 className="flex place-content-between scroll-m-20 text-xl font-extrabold tracking-tight md:text-4xl">
           <Textarea

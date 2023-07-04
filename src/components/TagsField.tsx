@@ -52,7 +52,7 @@ const TagsField = ({ setTags, tags, setTagsToRemove, tagsToRemove }: Props) => {
       <Input
         onKeyDown={handleKeyDown}
         type="text"
-        className="  border-none outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 px-[0.5em] py-0 w-auto h-auto flex-grow"
+        className=" border rounded-full w-fit text-center outline-none focus-visible:ring-0 focus-visible:ring-transparent focus-visible:ring-offset-0 px-[0.5em] py-0  "
         placeholder="Tag your note"
       />
     </div>

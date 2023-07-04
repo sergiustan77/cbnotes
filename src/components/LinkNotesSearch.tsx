@@ -88,8 +88,8 @@ const LinkNotesSearch = ({
       <div className="w-full ">
         {!notesAreLoading ? (
           !selectedNote ? (
-            <ScrollArea className="w-full h-64 overflow-hidden ">
-              <div className="w-full flex place-content-center md:place-content-evenly gap-2 flex-wrap">
+            <ScrollArea className="w-full h-72 overflow-hidden ">
+              <div className="w-full flex place-content-center md:place-content-evenly gap-4 flex-wrap">
                 {" "}
                 {notesReadyToDisplay.map(
                   (n, i) =>

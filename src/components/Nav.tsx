@@ -6,57 +6,67 @@ import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 import { PlusIcon, StickyNote, Tag, TagsIcon } from "lucide-react";
 import Link from "next/link";
+import MobileMenu from "./MobileMenu";
 type Props = {};
 
 const Nav = (props: Props) => {
   const { user } = useUser();
   return (
     <div className="  border-b p-2">
-      <div className="container flex place-content-between">
-        {" "}
-        <div className="flex place-items-center gap-4">
-          {" "}
-          <ThemeToggle /> Hi {user?.firstName}!
-        </div>
-        <div className="">
+      <div className="container mx-auto flex place-content-between  ">
+        <SignedIn>
+          <div className="flex gap-4 items-center">
+            <UserButton />
+            <p className=" font-semibold"> {user?.fullName}</p>
+          </div>
+        </SignedIn>
+        <SignedOut>
+          <div className="flex items-center font-semibold">Hi!</div>
+        </SignedOut>
+
+        <div className=" flex gap-2 ">
+          <ThemeToggle />
+
           <SignedIn>
-            <div className="flex gap-4">
-              <Link
-                className={cn(
-                  buttonVariants({
+            <div className="md:hidden ">
+              <MobileMenu />
+            </div>
+            <div className=" gap-2 hidden md:flex">
+              <div className="gap-4 flex">
+                <Link
+                  href={"/notes/new-note"}
+                  className={buttonVariants({
                     variant: "ghost",
                     size: "icon",
-                  })
-                )}
-                href={`/notes/tags`}
-              >
-                <TagsIcon />
-              </Link>
-              <Link
-                href={"/notes"}
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "iconCircle",
-                })}
-              >
-                <StickyNote />
-              </Link>
-              <Link
-                href={"/notes/new-note"}
-                className={buttonVariants({
-                  variant: "ghost",
-                  size: "iconCircle",
-                })}
-              >
-                <PlusIcon />
-              </Link>
-
-              <UserButton />
+                  })}
+                >
+                  <PlusIcon />
+                </Link>
+                <Link
+                  className={cn(
+                    buttonVariants({
+                      variant: "ghost",
+                      size: "icon",
+                    })
+                  )}
+                  href={`/notes/tags`}
+                >
+                  <TagsIcon />
+                </Link>
+                <Link
+                  href={"/notes"}
+                  className={buttonVariants({
+                    variant: "ghost",
+                    size: "icon",
+                  })}
+                >
+                  <StickyNote />
+                </Link>
+              </div>
             </div>
           </SignedIn>
-
           <SignedOut>
-            <div className="flex gap-4">
+            <div className="w-full flex gap-4">
               {" "}
               <Link
                 href={"/auth/sign-in"}

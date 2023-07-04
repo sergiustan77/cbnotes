@@ -11,7 +11,10 @@ const loading = (props: Props) => {
         {Array(16)
           .fill("Skeleton")
           .map((t, i) => (
-            <Skeleton className="w-full md:w-80 h-80 mt-4  rounded-md" />
+            <Skeleton
+              key={i}
+              className="w-full md:w-80 h-80 mt-4  rounded-md"
+            />
           ))}
       </div>
     </div>

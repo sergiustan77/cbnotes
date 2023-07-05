@@ -4,7 +4,7 @@ import { Card, CardTitle, CardHeader, CardContent } from "@/components/ui/card";
 
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "./ui/button";
-import { Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@clerk/nextjs";
 
@@ -19,10 +19,12 @@ const NewNote = ({}: Props) => {
   const { userId } = useAuth();
   const [tags, setTags] = React.useState<String[]>([]);
   const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
+  const [isSaved, setIsSaved] = React.useState(false);
 
   const router = useRouter();
 
   const newNote = async () => {
+    setIsSaved(true);
     const res = await fetch("/api/notes/new", {
       method: "POST",
       body: JSON.stringify({
@@ -60,8 +62,13 @@ const NewNote = ({}: Props) => {
             >
               <X />
             </Button>
-            <Button variant={"default"} size={"icon"} onClick={newNote}>
-              <Save />
+            <Button
+              disabled={isSaved}
+              variant={"default"}
+              size={"icon"}
+              onClick={newNote}
+            >
+              {!isSaved ? <Save /> : <Loader2 className="animate-spin" />}
             </Button>
           </div>
         </h1>

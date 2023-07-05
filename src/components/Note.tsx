@@ -1,7 +1,7 @@
 "use client";
 import Note from "@/lib/interfaces/Note";
 import React from "react";
-import { Save, X } from "lucide-react";
+import { Loader2, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import {
@@ -40,6 +40,7 @@ const Note = ({ note, initialTags }: Props) => {
   const [tags, setTags] = React.useState<String[]>(initialTags);
   const [tagsToRemove, setTagsToRemove] = React.useState<String[]>([]);
   const [update, setUpdate] = React.useState(false);
+  const [isSaved, setIsSaved] = React.useState(false);
 
   const handleSetUpdate = (value: boolean) => {
     setUpdate(value);
@@ -49,6 +50,7 @@ const Note = ({ note, initialTags }: Props) => {
   const router = useRouter();
 
   const updateNote = async () => {
+    setIsSaved(true);
     const res = await fetch("/api/notes/update", {
       method: "POST",
       body: JSON.stringify({
@@ -62,6 +64,7 @@ const Note = ({ note, initialTags }: Props) => {
     }).then(() => {
       router.refresh();
       setIsEditing(false);
+      setIsSaved(false);
     });
   };
 
@@ -119,8 +122,13 @@ const Note = ({ note, initialTags }: Props) => {
               >
                 <X />
               </Button>
-              <Button size={"icon"} variant={"default"} onClick={updateNote}>
-                <Save />
+              <Button
+                size={"icon"}
+                variant={"default"}
+                onClick={updateNote}
+                disabled={isSaved}
+              >
+                {!isSaved ? <Save /> : <Loader2 className=" animate-spin" />}
               </Button>
             </div>
           )}

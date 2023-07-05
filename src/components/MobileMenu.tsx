@@ -106,7 +106,6 @@ const MobileMenu = (props: Props) => {
             </div>
           </SignedOut>
         </div>
-        <SheetFooter></SheetFooter>
       </SheetContent>
     </Sheet>
   );

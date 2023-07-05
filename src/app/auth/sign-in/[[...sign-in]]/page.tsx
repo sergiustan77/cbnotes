@@ -44,6 +44,7 @@ const Page = () => {
             footerActionText: "text-muted-foreground",
             footerActionLink:
               "text-primary font-semibold hover:text-primary/90",
+            socialButtonsBlockButtonText: "text-muted-foreground",
           },
           layout: {
             socialButtonsPlacement: "bottom",

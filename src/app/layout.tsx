@@ -4,8 +4,8 @@ import Nav from "@/components/Nav";
 import { ClerkProvider } from "@clerk/nextjs";
 
 export const metadata = {
-  title: "Notes",
-  description: "Free your mind",
+  title: "MemoGraph",
+  description: "Free your mind!",
 };
 
 export default function RootLayout({
@@ -19,7 +19,7 @@ export default function RootLayout({
         <body className="">
           <Providers>
             <Nav />
-            {children}
+            <div className="mt-16"> {children}</div>
           </Providers>
         </body>
       </html>

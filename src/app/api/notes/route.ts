@@ -11,13 +11,13 @@ export async function GET(request: NextRequest) {
     const resNotes = await session.executeRead((tx) =>
       tx.run(
         `MATCH (u:User {userId: $userId})-[r:HAS_NOTE]->(n:Note)
-    OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
-    WITH COLLECT(DISTINCT t.name) AS tags, n
-   WITH {title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note
-   WITH COLLECT(note) as notes
-   OPTIONAL MATCH (u:User {userId: $userId})-[:HAS_TAG]->(t:Tag)
-    WITH COLLECT(t.name) as tags, notes
-    RETURN {notes: notes, tags: tags} as notes
+         OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
+         WITH COLLECT(DISTINCT t.name) AS tags, n
+         WITH {title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note
+         WITH COLLECT(note) as notes
+         OPTIONAL MATCH (u:User {userId: $userId})-[:HAS_TAG]->(t:Tag)
+         WITH DISTINCT COLLECT(t.name) as tags, notes
+         RETURN {notes: notes, tags: tags} as notes
     `,
         { userId }
       )

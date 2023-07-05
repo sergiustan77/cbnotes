@@ -21,7 +21,7 @@ const getNotes = async (userId: string) => {
   const resNotes = await session.executeRead((tx) =>
     tx.run(
       `MATCH (u:User {userId: $userId})-[r:HAS_NOTE]->(n:Note)
-    OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
+    OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)<-[:HAS_TAG]-(u)
     WITH COLLECT(DISTINCT t.name) AS tags, n
    WITH {title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note
    WITH COLLECT(note) as notes

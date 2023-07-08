@@ -19,7 +19,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Info, Edit2, Trash2, Link } from "lucide-react";
+import { Info, Edit2, Trash2, Link, Share2 } from "lucide-react";
 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "./ui/textarea";
@@ -32,12 +32,12 @@ import { useRouter } from "next/navigation";
 
 type Props = {
   note: Note;
-  setEditing: Function;
+
   update: boolean;
   setUpdate: Function;
 };
 
-const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
+const LinkNotes = ({ note, update, setUpdate }: Props) => {
   const [linkToDescription, setLinkToDescription] = React.useState("");
   const [linkTo, setLinkTo] = React.useState<Note>();
   const { userId } = useAuth();
@@ -79,25 +79,14 @@ const LinkNotes = ({ note, setEditing, update, setUpdate }: Props) => {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className=" ">
-          <DropdownMenuLabel>Note Actions</DropdownMenuLabel>
-          <DropdownMenuSeparator />
-
-          <DropdownMenuItem
-            onClick={() => {
-              setEditing(true);
-            }}
-          >
-            <Edit2 className="mr-2 h-4 w-4" />
-            <span>Edit note</span>
-          </DropdownMenuItem>
-
-          <DialogTrigger className="w-full">
-            <DropdownMenuItem>
-              <Link className="mr-2 h-4 w-4" />
-              <span>Link Note</span>
-            </DropdownMenuItem>
-          </DialogTrigger>
-
+          <DropdownMenuGroup>
+            <DialogTrigger className="w-full">
+              <DropdownMenuItem>
+                <Link className="mr-2 h-4 w-4" />
+                <span>Link Notes</span>
+              </DropdownMenuItem>
+            </DialogTrigger>
+          </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={deleteNoteHandle}>

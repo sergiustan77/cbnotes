@@ -60,7 +60,7 @@ export function ImageDialog({ editor }: Props) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button size={"iconCircle"} variant="outline">
+        <Button size={"iconCircle"}>
           <Image className="w-4 h-4"></Image>
         </Button>
       </DialogTrigger>

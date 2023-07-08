@@ -1,7 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import ThemeToggle from "./ui/ThemeToggle";
-import { buttonVariants } from "./ui/button";
+import { Button, buttonVariants } from "./ui/button";
 import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 import { PlusIcon, StickyNote, Tag, TagsIcon } from "lucide-react";
@@ -9,6 +9,8 @@ import Link from "next/link";
 import MobileMenu from "./MobileMenu";
 import { Montserrat } from "next/font/google";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import randomUUID from "@/lib/randomUUID";
 type Props = {};
 
 const montserrat = Montserrat({
@@ -16,10 +18,27 @@ const montserrat = Montserrat({
   subsets: ["latin"],
 });
 const Nav = (props: Props) => {
+  const router = useRouter();
   const { user } = useUser();
+  const newNote = async () => {
+    const id = randomUUID();
+    const res = await fetch("/api/notes/new", {
+      method: "POST",
+      body: JSON.stringify({
+        userId: user?.id.toString(),
+        title: "",
+        content: "",
+        noteContentText: "",
+        id: id,
+      }),
+    }).then(() => {
+      router.push(`/notes/${id}`);
+    });
+  };
+
   return (
-    <div className=" fixed bg-background z-50 top-0  w-full border-b p-2">
-      <div className="w-full md:container flex place-content-between  ">
+    <div className="  sticky z-[50] bg-background  top-0  w-full border-b p-2">
+      <div className="w-full  md:container flex place-content-between  ">
         <Link href={"/"} className="logo flex items-center gap-2 text-primary">
           <Image
             className="hidden dark:block"
@@ -59,15 +78,9 @@ const Nav = (props: Props) => {
             </div>
             <div className=" gap-2 hidden md:flex">
               <div className="gap-4 flex">
-                <Link
-                  href={"/notes/new-note"}
-                  className={buttonVariants({
-                    variant: "ghost",
-                    size: "icon",
-                  })}
-                >
+                <Button onClick={newNote} variant="ghost" size="icon">
                   <PlusIcon />
-                </Link>
+                </Button>
                 <Link
                   className={cn(
                     buttonVariants({

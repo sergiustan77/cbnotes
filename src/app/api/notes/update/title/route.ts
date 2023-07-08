@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { driver } from "@/lib/neo4j";
 
 export async function POST(request: NextRequest) {
-  const { content, userId, id, noteContentText } = await request.json();
+  const { title, userId, id } = await request.json();
 
   const session = driver.session();
 
@@ -11,13 +11,12 @@ export async function POST(request: NextRequest) {
       tx.run(
         `MATCH (u:User {userId: $userId})-[:HAS_NOTE]-(n:Note {id: $id})
     
-        SET n.content = $content
-        SET n.noteContentText = $noteContentText
-        SET n.updated_at = datetime({timezone: 'Europe/Bucharest'})
+        SET n.title = $title
+      
     
       
         `,
-        { userId, id, content, noteContentText }
+        { userId, id, title }
       )
     );
 

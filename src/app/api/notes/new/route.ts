@@ -2,23 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { driver } from "@/lib/neo4j";
 
 export async function POST(request: NextRequest) {
-  const { title, content, userId, tags } = await request.json();
+  const { title, content, userId, noteContentText, id } = await request.json();
 
   const session = driver.session();
-  const id = crypto.randomUUID();
 
   let query = ` 
 
   MATCH (u:User {userId: $userId})
 
-  CREATE (n:Note {title: $title, content: $content, id: $id, created_at: datetime({timezone: 'Europe/Bucharest'}), updated_at: datetime({timezone: 'Europe/Bucharest'}) })
+  CREATE (n:Note {title: $title, content: $content, noteContentText: $noteContentText, id: $id, created_at: datetime({timezone: 'Europe/Bucharest'}), updated_at: datetime({timezone: 'Europe/Bucharest'}) })
       CREATE (u)-[:HAS_NOTE]->(n)
   
-  WITH u, n
-  UNWIND $tags as tag_name
-  MERGE (tag:Tag {name: tag_name, user: $userId})<-[:HAS_TAG]-(u)
-  MERGE (n)-[:TAGGED_IN]->(tag)
-  MERGE (u)-[:HAS_TAG]->(tag)
+
   `;
 
   try {
@@ -26,9 +21,9 @@ export async function POST(request: NextRequest) {
       tx.run(query, {
         userId,
         id,
-        tags,
         title,
         content,
+        noteContentText,
       })
     );
 

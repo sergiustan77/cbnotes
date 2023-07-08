@@ -6,6 +6,7 @@ interface Note {
   id: string;
   tags: String[];
   linkedNotes: any[];
+  noteContentText: string;
 }
 
 export default Note;

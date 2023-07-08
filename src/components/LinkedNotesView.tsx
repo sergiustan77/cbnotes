@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/accordion";
 
 import LinkedNoteHoverCard from "./LinkedNoteHoverCard";
-import { Link } from "lucide-react";
+import { Link, Share2 } from "lucide-react";
 
 type Props = {
   note: string;
@@ -39,11 +39,11 @@ const LinkedNotesView = ({
     setNotes();
   }, [update]);
   return (
-    <Accordion type="single" collapsible className="w-full">
+    <Accordion type="single" collapsible className="w-full ">
       <AccordionItem value="item-1">
         <AccordionTrigger className=" ">
           <div className="flex gap-2 items-center">
-            <Link className="h-4 w-4" />
+            <Share2 className="h-4 w-4" />
             <p className=" text-base">Linked Notes</p>
           </div>
         </AccordionTrigger>

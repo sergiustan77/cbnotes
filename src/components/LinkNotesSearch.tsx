@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 
 import { Input } from "./ui/input";
 
-import { Search } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import Note from "@/lib/interfaces/Note";
 
 import { Label } from "./ui/label";
@@ -30,7 +30,7 @@ const LinkNotesSearch = ({
   const [query, setQuery] = React.useState("");
   const [linkedNotes, setLinkedNotes] = React.useState([]);
 
-  const [notesAreLoading, setNotesAreLoading] = React.useState(false);
+  const [notesAreLoading, setNotesAreLoading] = React.useState(true);
 
   const filterNoteSuggestions = (array: Note[]) => {
     return array.filter(
@@ -116,7 +116,9 @@ const LinkNotesSearch = ({
             />
           )
         ) : (
-          <div className="h-64">Loading</div>
+          <div className="h-72 w-full grid place-items-center ">
+            <Loader2 className="animate-spin" />
+          </div>
         )}
       </div>
     </div>

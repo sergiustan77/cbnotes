@@ -1,8 +1,0 @@
-.ProseMirror:focus {
-  outline: none;
-  box-shadow: none;
-}
-
-.ProseMirror {
-  @apply border rounded-md p-6 min-h-screen;
-}

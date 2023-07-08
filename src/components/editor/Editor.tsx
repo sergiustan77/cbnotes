@@ -1,5 +1,5 @@
 import "./styles.scss";
-import "./editor.css";
+
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -19,6 +19,8 @@ import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import React from "react";
 import HardBreak from "@tiptap/extension-hard-break";
+import { useDebouncedCallback } from "use-debounce";
+import { useRouter } from "next/navigation";
 
 import {
   Bold,
@@ -44,10 +46,14 @@ import {
   ImageIcon,
   Scaling,
   Video,
+  Check,
+  Loader2,
 } from "lucide-react";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import { ImageDialog } from "./ImageDialog";
+import { useToast } from "../ui/use-toast";
+import { ToastAction } from "../ui/toast";
 
 type Props = {
   editor: any;
@@ -55,9 +61,17 @@ type Props = {
   link: string;
   videoLink: string;
   setVideoLink: Function;
+  savedStatus: string;
 };
 
-const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
+const MenuBar = ({
+  editor,
+  link,
+  setLink,
+  videoLink,
+  setVideoLink,
+  savedStatus,
+}: Props) => {
   const [isImageFromDevice, setIsImageFromDevice] = React.useState(false);
   const getEditor = () => {
     return editor;
@@ -107,10 +121,9 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
   };
 
   return (
-    <div className="flex place-content-center flex-wrap gap-2 p-2 w-full">
+    <div className="flex   place-content-center flex-wrap gap-2 p-2 w-full ">
       <Button
         size={"iconCircle"}
-        variant={!editor.isActive("codeBlock") ? "outline" : "default"}
         onClick={() => editor.chain().focus().undo().run()}
         disabled={!editor.can().chain().focus().undo().run()}
       >
@@ -118,7 +131,6 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
       </Button>
       <Button
         size={"iconCircle"}
-        variant={!editor.isActive("codeBlock") ? "outline" : "default"}
         onClick={() => editor.chain().focus().redo().run()}
         disabled={!editor.can().chain().focus().redo().run()}
       >
@@ -242,6 +254,7 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
         <Quote className="w-4 h-4" />
       </Button>
       <Button
+        className="hidden md:flex"
         size={"iconCircle"}
         variant={!editor.isActive("codeBlock") ? "outline" : "default"}
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
@@ -250,12 +263,14 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
       </Button>
       <Button
         size={"iconCircle"}
+        className="hidden md:flex"
         variant={!editor.isActive("codeBlock") ? "outline" : "default"}
         onClick={() => editor.chain().focus().setHardBreak().run()}
       >
         <FlagTriangleRight className="w-4 h-4" />
       </Button>
       <Button
+        className="hidden md:flex"
         variant={"outline"}
         size={"iconCircle"}
         onClick={() => editor.chain().focus().unsetAllMarks().run()}
@@ -263,6 +278,7 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
         <CopyX className="w-4 h-4" />
       </Button>
       <Button
+        className="hidden md:flex"
         variant={"outline"}
         size={"iconCircle"}
         onClick={() => editor.chain().focus().clearNodes().run()}
@@ -274,7 +290,7 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
 
       <Dialog>
         <DialogTrigger asChild>
-          <Button variant={"outline"} size={"iconCircle"}>
+          <Button size={"iconCircle"}>
             <Video className="w-4 h-4" />
           </Button>
         </DialogTrigger>
@@ -306,7 +322,7 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
       </Dialog>
       <Dialog>
         <DialogTrigger asChild>
-          <Button size={"iconCircle"} variant="outline">
+          <Button size={"iconCircle"}>
             <LinkIcon className="w-4 h-4"></LinkIcon>
           </Button>
         </DialogTrigger>
@@ -341,15 +357,69 @@ const MenuBar = ({ editor, link, setLink, videoLink, setVideoLink }: Props) => {
 };
 
 type EditorPros = {
+  noteId: string;
+  userId: string;
+
   setContent: Function;
   content: string;
+  setNoteContentText: Function;
 };
 
-const Editor = ({ setContent, content }: EditorPros) => {
+const Editor = ({
+  setContent,
+  content,
+  setNoteContentText,
+  noteId,
+  userId,
+}: EditorPros) => {
   const [link, setLink] = React.useState("");
   const [videoLink, setVideoLink] = React.useState("");
+  const [savedStatus, setSavedStatus] = React.useState("Saved");
+
+  const router = useRouter();
+
+  const updateNote = async (
+    id: string,
+
+    content: string,
+    noteContentText: string,
+    userId: string
+  ) => {
+    const res = await fetch("/api/notes/update", {
+      method: "POST",
+      body: JSON.stringify({
+        id: id,
+        userId: userId,
+
+        content: content,
+        noteContentText: noteContentText,
+      }),
+    }).then(() => {
+      router.refresh();
+    });
+  };
+
+  const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
+    const noteHTML = editor.getHTML();
+    const noteContentText = editor.getText();
+    setContent(noteHTML);
+    setNoteContentText(noteContentText);
+    await updateNote(noteId, noteHTML, noteContentText, userId);
+    // Simulate a delay in saving.
+
+    setTimeout(() => {
+      setSavedStatus("Saved");
+    }, 500);
+  }, 1000);
 
   const editor = useEditor({
+    editorProps: {
+      attributes: {
+        class:
+          "md:border mt-4 md:mt-0 w-full md:rounded-md md:p-6 min-h-screen focus:outline-none",
+      },
+    },
+
     extensions: [
       Youtube.configure({
         HTMLAttributes: {
@@ -384,21 +454,32 @@ const Editor = ({ setContent, content }: EditorPros) => {
       }),
     ],
     content: content,
-    onUpdate: ({ editor }) => {
-      setContent(editor.getHTML());
+    onUpdate: (e) => {
+      setSavedStatus("Saving");
+
+      debouncedUpdates(e);
     },
   });
 
   return (
-    <div className="w-full">
-      <MenuBar
-        setVideoLink={setVideoLink}
-        videoLink={videoLink}
-        link={link}
-        setLink={setLink}
-        editor={editor}
-      />
-      <EditorContent editor={editor} />
+    <div className="w-full flex flex-col gap-2 ">
+      {" "}
+      <div className="w-full flex place-content-center  sticky top-16 z-[50] ">
+        <div className="w-fit border rounded-lg bg-background">
+          <MenuBar
+            setVideoLink={setVideoLink}
+            videoLink={videoLink}
+            link={link}
+            setLink={setLink}
+            editor={editor}
+            savedStatus={savedStatus}
+          />
+        </div>
+      </div>
+      <div className="w-full">
+        {" "}
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };

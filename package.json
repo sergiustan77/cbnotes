@@ -20,6 +20,7 @@
     "@radix-ui/react-scroll-area": "^1.0.3",
     "@radix-ui/react-separator": "^1.0.3",
     "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-toast": "^1.1.4",
     "@tiptap/extension-color": "^2.0.3",
     "@tiptap/extension-hard-break": "^2.0.3",
     "@tiptap/extension-image": "^2.0.3",
@@ -51,7 +52,8 @@
     "sass": "^1.62.1",
     "tailwind-merge": "^1.13.2",
     "tailwindcss-animate": "^1.0.6",
-    "typescript": "5.0.2"
+    "typescript": "5.0.2",
+    "use-debounce": "^9.0.4"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",

@@ -2,6 +2,7 @@ import "./globals.css";
 import Providers from "@/lib/providers";
 import Nav from "@/components/Nav";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "@/components/ui/toaster";
 
 export const metadata = {
   title: "MemoGraph",
@@ -19,7 +20,8 @@ export default function RootLayout({
         <body className="">
           <Providers>
             <Nav />
-            <div className="mt-16"> {children}</div>
+            <div className="mt-2"> {children}</div>
+            <Toaster />
           </Providers>
         </body>
       </html>

@@ -71,7 +71,7 @@ const LinkedNoteHoverCard = ({
         </div>
       </HoverCardTrigger>
 
-      <HoverCardContent className="w-64 ">
+      <HoverCardContent className="w-64 z-[20]">
         <div className="space-y-1 grid gap-2">
           <Accordion type="single" collapsible className="">
             <AccordionItem value="item-1">

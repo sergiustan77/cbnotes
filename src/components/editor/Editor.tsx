@@ -464,7 +464,7 @@ const Editor = ({
   return (
     <div className="w-full flex flex-col gap-2 ">
       {" "}
-      <div className="w-full flex place-content-center  sticky top-16 z-[50] ">
+      <div className="w-full flex place-content-center  sticky top-16 z-[15] ">
         <div className="w-fit border rounded-lg bg-background">
           <MenuBar
             setVideoLink={setVideoLink}

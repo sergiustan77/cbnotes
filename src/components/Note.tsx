@@ -14,7 +14,6 @@ import LinkNotes from "./LinkNotes";
 import LinkedNotesView from "./LinkedNotesView";
 import { Input } from "./ui/input";
 import { useDebouncedCallback } from "use-debounce";
-import LinkedNotesViewSide from "./LinkedNotesViewSide";
 
 type Props = {
   note: Note;

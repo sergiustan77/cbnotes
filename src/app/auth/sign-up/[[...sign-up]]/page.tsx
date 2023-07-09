@@ -33,6 +33,14 @@ const Page = () => {
 
             formFieldHintText__firstName: "text-muted-foreground",
             formFieldHintText__lastName: "text-muted-foreground",
+            otpCodeFieldInput:
+              "text-primary border-b-border active:border-b-muted",
+            formHeaderTitle: "text-primary",
+            formHeaderSubtitle: "text-primary",
+            identityPreviewText: "text-primary",
+            identityPreview: "border-border bg-muted",
+            identityPreviewEditButton: "text-muted-foreground",
+            formResendCodeLink: "text-muted-foreground font-medium",
           },
           layout: {
             socialButtonsPlacement: "bottom",

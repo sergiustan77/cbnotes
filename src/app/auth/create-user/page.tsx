@@ -20,7 +20,7 @@ const page = async (props: Props) => {
   const { userId } = auth();
   const creatUser = await createUserNode(userId as string);
   return (
-    <div className="w-full h-[100vh] text-4xl flex gap-4">
+    <div className="w-full h-[100vh] text-4xl grid gap-4">
       Creating User <Loader2 className=" animate-spin" />
     </div>
   );

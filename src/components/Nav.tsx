@@ -57,10 +57,6 @@ const Nav = (props: Props) => {
           <p className=" text-lg font-bold">memograph</p>
         </Link>
 
-        <SignedOut>
-          <div className="flex items-center font-semibold">Hi!</div>
-        </SignedOut>
-
         <div className=" flex gap-2 ">
           <div className="">
             {" "}

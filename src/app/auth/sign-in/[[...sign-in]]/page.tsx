@@ -5,8 +5,9 @@ const Page = () => {
   return (
     <div className="container mx-auto flex justify-center items-center h-[90vh]">
       <SignIn
-        redirectUrl={"/notes"}
+        afterSignUpUrl={"/create-user"}
         signUpUrl="/auth/sign-up"
+        afterSignInUrl={"/notes"}
         appearance={{
           elements: {
             identityPreview: "border-border bg-background",

@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import {
   Card,
@@ -16,6 +15,7 @@ import parse from "html-react-parser";
 import { Badge } from "./ui/badge";
 import Image from "next/image";
 import { Youtube } from "lucide-react";
+import ImageComponent from "./ImageComponent";
 
 type Props = {
   note: Note;
@@ -32,7 +32,9 @@ const NoteCard = ({ note }: Props) => {
     >
       <Card className="w-full h-80 overflow-hidden hover:border-primary">
         <CardHeader className="h-25">
-          <CardTitle>{note.title}</CardTitle>
+          <CardTitle className=" text-ellipsis overflow-hidden">
+            {note.title}
+          </CardTitle>
           <CardDescription>
             {new Date(note.updated_at).toLocaleString("ro-RO", {
               day: "numeric",
@@ -82,17 +84,22 @@ const NoteCard = ({ note }: Props) => {
                       <div className="absolute flex place-content-center items-center bg-gray-800/30  w-full h-full z-50">
                         <Youtube className=" text-white rounded-lg " />
                       </div>
-                      <div className="relative aspect-video rounded-md">
+                      <div className=" aspect-video rounded-md">
                         {" "}
-                        <Image
+                        <ImageComponent
                           className="rounded-md  "
-                          loader={imageLoader}
+                          width={
+                            parseInt(node.attribs.width)
+                              ? parseInt(node.attribs.width)
+                              : 300
+                          }
+                          height={
+                            parseInt(node.attribs.height)
+                              ? parseInt(node.attribs.height)
+                              : 300
+                          }
                           alt={node.attribs.src}
                           src={thumbnail}
-                          fill
-                          style={{
-                            objectFit: "contain",
-                          }}
                         />
                       </div>
                     </div>
@@ -101,8 +108,7 @@ const NoteCard = ({ note }: Props) => {
 
                 if (node.attribs && node.name === "image-resizer") {
                   return (
-                    <Image
-                      loader={imageLoader}
+                    <ImageComponent
                       alt={node.attribs.src}
                       src={node.attribs.src.toString()}
                       width={parseInt(node.attribs.width) || 300}

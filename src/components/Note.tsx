@@ -10,7 +10,7 @@ import TagsField from "./TagsField";
 
 import Editor from "./editor/Editor";
 
-import LinkNotes from "./LinkNotes";
+import NoteActions from "./NoteActions";
 import LinkedNotesView from "./LinkedNotesView";
 import { Input } from "./ui/input";
 import { useDebouncedCallback } from "use-debounce";
@@ -86,7 +86,11 @@ const Note = ({ note, initialTags }: Props) => {
               debouncedTitleUpdate(e.target.value);
             }}
           />{" "}
-          <LinkNotes update={update} setUpdate={handleSetUpdate} note={note} />
+          <NoteActions
+            update={update}
+            setUpdate={handleSetUpdate}
+            note={note}
+          />
         </div>
 
         <div className="mt-2">

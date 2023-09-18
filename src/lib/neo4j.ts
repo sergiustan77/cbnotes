@@ -4,5 +4,6 @@ export const driver = neo4j.driver(
   neo4j.auth.basic(
     process.env.NEXT_PUBLIC_NEO4J_USERNAME as string,
     process.env.NEXT_PUBLIC_NEO4J_PASSWORD as string
-  )
+  ),
+  { disableLosslessIntegers: true }
 );

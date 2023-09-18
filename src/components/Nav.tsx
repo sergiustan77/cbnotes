@@ -11,6 +11,8 @@ import { Montserrat } from "next/font/google";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import randomUUID from "@/lib/randomUUID";
+import { NavMenuDesktop } from "./menus/NavMenuDesktop";
+import { NavMenuMobile } from "./menus/NavMenuMobile";
 type Props = {};
 
 const montserrat = Montserrat({
@@ -31,14 +33,13 @@ const Nav = (props: Props) => {
         noteContentText: "",
         id: id,
       }),
-    }).then(() => {
-      router.push(`/notes/${id}`);
     });
+    router.push(`/notes/${id}`);
   };
 
   return (
-    <div className="  sticky z-[50] bg-background  top-0  w-full border-b p-2">
-      <div className="w-full  md:container flex place-content-between  ">
+    <div className="  sticky z-[60] bg-background  top-0  w-full border-b p-2">
+      <div className="md:container w-full  flex place-content-between  ">
         <Link href={"/"} className="logo flex items-center gap-2 text-primary">
           <Image
             className="hidden dark:block"
@@ -65,38 +66,16 @@ const Nav = (props: Props) => {
 
           <SignedIn>
             {" "}
-            <div className="md:hidden flex gap-4 ">
+            <div className="md:hidden flex gap-4 items-center">
               <SignedIn>
                 {" "}
                 <UserButton />
               </SignedIn>
-              <MobileMenu />
+              <NavMenuMobile />
             </div>
-            <div className=" gap-2 hidden md:flex">
-              <div className="gap-4 flex">
-                <Button onClick={newNote} variant="ghost" size="icon">
-                  <PlusIcon />
-                </Button>
-                <Link
-                  className={cn(
-                    buttonVariants({
-                      variant: "ghost",
-                      size: "icon",
-                    })
-                  )}
-                  href={`/notes/tags`}
-                >
-                  <TagsIcon />
-                </Link>
-                <Link
-                  href={"/notes"}
-                  className={buttonVariants({
-                    variant: "ghost",
-                    size: "icon",
-                  })}
-                >
-                  <StickyNote />
-                </Link>{" "}
+            <div className=" gap-2 hidden md:flex ">
+              <div className="gap-2 flex items-center">
+                <NavMenuDesktop />
                 <UserButton />
               </div>
             </div>{" "}

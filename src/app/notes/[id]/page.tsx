@@ -25,7 +25,7 @@ const getNote = async (userId: string, noteId: string) => {
   OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
   OPTIONAL MATCH (n)-[r:LINKED_TO]->(n_link:Note)<-[:HAS_NOTE]-(u)
 WITH COLLECT(DISTINCT t.name) AS tags, n, COLLECT(DISTINCT {title: n_link.title, content: n_link.content, id: n_link.id , updated_at: apoc.date.toISO8601(datetime(n_link.updated_at).epochMillis, "ms"), linkDescription: r.description } ) as linkedNotes 
-  RETURN { title: n.title, content: n.content, noteContentText: n.noteContentText, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms"), updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags, linkedNotes: linkedNotes} as note`,
+  RETURN { title: n.title, content: n.content, noteContentText: n.noteContentText, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms"), updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags, isGlobal: n.isGlobal, linkedNotes: linkedNotes} as note`,
       { userId, id: noteId }
     )
   );

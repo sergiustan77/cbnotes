@@ -41,9 +41,8 @@ const MobileMenu = (props: Props) => {
         noteContentText: "",
         id: id,
       }),
-    }).then(() => {
-      router.push(`/notes/${id}`);
     });
+    router.push(`/notes/${id}`);
   };
   return (
     <Sheet>

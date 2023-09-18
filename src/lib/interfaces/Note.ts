@@ -7,6 +7,9 @@ interface Note {
   tags: String[];
   linkedNotes: any[];
   noteContentText: string;
+  isGlobal: boolean;
+  user: string;
+  likes: number;
 }
 
 export default Note;

@@ -19,7 +19,8 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
-import { Info, Edit2, Trash2, Link, Share2 } from "lucide-react";
+import { Info, Edit2, Trash2, LinkIcon, Share2, Settings } from "lucide-react";
+import Link from "next/link";
 
 import { Label } from "@/components/ui/label";
 import { Textarea } from "./ui/textarea";
@@ -37,7 +38,7 @@ type Props = {
   setUpdate: Function;
 };
 
-const LinkNotes = ({ note, update, setUpdate }: Props) => {
+const NoteActions = ({ note, update, setUpdate }: Props) => {
   const [linkToDescription, setLinkToDescription] = React.useState("");
   const [linkTo, setLinkTo] = React.useState<Note>();
   const { userId } = useAuth();
@@ -80,9 +81,18 @@ const LinkNotes = ({ note, update, setUpdate }: Props) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent className=" ">
           <DropdownMenuGroup>
+            <DropdownMenuItem>
+              <Link
+                className="flex items-center"
+                href={`/notes/${note.id}/settings`}
+              >
+                <Settings className="mr-2 h-4 w-4" />
+                Settings
+              </Link>
+            </DropdownMenuItem>
             <DialogTrigger className="w-full">
               <DropdownMenuItem>
-                <Link className="mr-2 h-4 w-4" />
+                <LinkIcon className="mr-2 h-4 w-4" />
                 <span>Link Notes</span>
               </DropdownMenuItem>
             </DialogTrigger>
@@ -171,4 +181,4 @@ const LinkNotes = ({ note, update, setUpdate }: Props) => {
   );
 };
 
-export default LinkNotes;
+export default NoteActions;

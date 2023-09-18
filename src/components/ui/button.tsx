@@ -25,9 +25,10 @@ const buttonVariants = cva(
         sm: "h-9 px-3 rounded-md",
         lg: "h-11 px-8 rounded-md text-xl",
         xl: "h-14 px-10 rounded-md text-xl",
-        icon: "h-9 w-9 px-0 rounded-md",
+        icon: "h-10 w-10 px-0 rounded-md",
         iconCircle: "h-8 w-8 px-0",
         iconCircleSmall: "h-4 w-4 px-0",
+        channel: "h-12 w-12 rounded-md",
       },
     },
     defaultVariants: {

@@ -1,32 +1,28 @@
 import React from "react";
-import { driver } from "@/lib/neo4j";
+
 import { auth } from "@clerk/nextjs";
+import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 type Props = {};
 
-const getCreatedUser = async (userId: any) => {
-  const session = driver.session();
-
-  const res = await session.executeWrite((tx) =>
-    tx.run(
-      `MERGE (u:User {userId: $userId})
-        RETURN u`,
-      { userId }
-    )
-  );
-
-  const values = res.records.map((record) => record.toObject());
-
-  return values;
-};
-
-const page = async (props: Props) => {
+const CreateUserPage = async () => {
   const { userId } = auth();
-  const createUser = await getCreatedUser(userId);
-  if (createUser.length > 0) {
-    redirect("/notes");
+
+  if (!userId) {
+    redirect("/auth/sign-in");
   }
-  return <div className="text-primary">Getting thing ready...</div>;
+
+  await prisma.user.upsert({
+    where: {
+      id: userId,
+    },
+    update: {},
+    create: {
+      id: userId,
+    },
+  });
+
+  redirect("/notes");
 };
 
-export default page;
+export default CreateUserPage;

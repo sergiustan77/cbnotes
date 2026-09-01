@@ -1,5 +1,5 @@
 "use client";
-import Note from "@/lib/interfaces/Note";
+import type NoteType from "@/lib/interfaces/Note";
 import React from "react";
 import { Loader2, Save, X } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -16,7 +16,7 @@ import { Input } from "./ui/input";
 import { useDebouncedCallback } from "use-debounce";
 
 type Props = {
-  note: Note;
+  note: NoteType;
   initialTags: string[];
 };
 
@@ -32,7 +32,7 @@ const Note = ({ note, initialTags }: Props) => {
   const [update, setUpdate] = React.useState(false);
 
   const [noteContentText, setNoteContentText] = React.useState<string>(
-    note.noteContentText
+    note.noteContentText,
   );
 
   const updateTitle = async (title: string) => {

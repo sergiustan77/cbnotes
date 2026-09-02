@@ -33,7 +33,7 @@ const Nav = (props: Props) => {
       return;
     }
 
-    router.push(`/notes${data.note.id}`);
+    router.push(`/notes/${data.note.id}`);
   };
 
   return (

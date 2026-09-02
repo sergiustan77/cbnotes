@@ -1,42 +1,48 @@
-import React from "react";
 import { auth } from "@clerk/nextjs/server";
 
 import Note from "@/components/Note";
-import { notFound } from "next/navigation";
-import { driver } from "@/lib/neo4j";
-import TagsField from "@/components/TagsField";
+import { notFound, redirect } from "next/navigation";
+
+import { prisma } from "@/lib/prisma";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
 const getNote = async (userId: string, noteId: string) => {
-  // const res = await fetch(`/api/notes/${noteId}?userId=${userId}`);
+  const note = await prisma.note.findFirst({
+    where: {
+      id: noteId,
+      userId,
+    },
+  });
 
-  // return await res.json();
+  if (!note) {
+    return null;
+  }
 
-  const session = driver.session();
-  const res = await session.executeRead((tx) =>
-    tx.run(
-      `MATCH (u:User {userId: $userId})-[:HAS_NOTE]->(n:Note {id: $id})
+  return {
+    id: note.id,
+    title: note.title,
+    content: note.content,
+    noteContentText: note.contentText,
+    created_at: note.createdAt.toISOString(),
+    updated_at: note.updatedAt.toISOString(),
 
-  OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
-  OPTIONAL MATCH (n)-[r:LINKED_TO]->(n_link:Note)<-[:HAS_NOTE]-(u)
-WITH COLLECT(DISTINCT t.name) AS tags, n, COLLECT(DISTINCT {title: n_link.title, content: n_link.content, id: n_link.id , updated_at: apoc.date.toISO8601(datetime(n_link.updated_at).epochMillis, "ms"), linkDescription: r.description } ) as linkedNotes 
-  RETURN { title: n.title, content: n.content, noteContentText: n.noteContentText, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms"), updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags, linkedNotes: linkedNotes} as note`,
-      { userId, id: noteId },
-    ),
-  );
-
-  await session.close();
-  const note = res.records.map((r) => r.get("note"))[0];
-  return note;
+    tags: [],
+    linkedNotes: [],
+  };
 };
 
-const page = async ({ params }: Props) => {
+const NotePage = async ({ params }: Props) => {
   const { userId } = await auth();
+
+  if (!userId) {
+    redirect("/auth/sign-in");
+  }
+
   const { id } = await params;
-  const note = await getNote(userId as string, id);
+  const note = await getNote(userId, id);
 
   if (!note) {
     notFound();
@@ -49,4 +55,4 @@ const page = async ({ params }: Props) => {
   );
 };
 
-export default page;
+export default NotePage;

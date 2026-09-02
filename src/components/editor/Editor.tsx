@@ -20,7 +20,6 @@ import Image from "@tiptap/extension-image";
 import React from "react";
 import HardBreak from "@tiptap/extension-hard-break";
 import { useDebouncedCallback } from "use-debounce";
-import { useRouter } from "next/navigation";
 
 import {
   Bold,
@@ -43,17 +42,12 @@ import {
   Undo2,
   Redo2,
   LinkIcon,
-  ImageIcon,
   Scaling,
   Video,
-  Check,
-  Loader2,
 } from "lucide-react";
 import Link from "@tiptap/extension-link";
 import Youtube from "@tiptap/extension-youtube";
 import { ImageDialog } from "./ImageDialog";
-import { useToast } from "../ui/use-toast";
-import { ToastAction } from "../ui/toast";
 
 type Props = {
   editor: any;
@@ -376,27 +370,27 @@ const Editor = ({
   const [videoLink, setVideoLink] = React.useState("");
   const [savedStatus, setSavedStatus] = React.useState("Saved");
 
-  const router = useRouter();
-
   const updateNote = async (
     id: string,
-
     content: string,
     noteContentText: string,
-    userId: string,
   ) => {
-    const res = await fetch("/api/notes/update", {
-      method: "POST",
+    const response = await fetch("/api/notes/update", {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        id: id,
-        userId: userId,
-
-        content: content,
-        noteContentText: noteContentText,
+        id,
+        content,
+        noteContentText,
       }),
-    }).then(() => {
-      router.refresh();
     });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message ?? "Failed to update note");
+    }
   };
 
   const debouncedUpdates = useDebouncedCallback(async ({ editor }) => {
@@ -404,12 +398,17 @@ const Editor = ({
     const noteContentText = editor.getText();
     setContent(noteHTML);
     setNoteContentText(noteContentText);
-    await updateNote(noteId, noteHTML, noteContentText, userId);
+
     // Simulate a delay in saving.
 
-    setTimeout(() => {
+    setSavedStatus("Saving...");
+    try {
+      await updateNote(noteId, noteHTML, noteContentText);
       setSavedStatus("Saved");
-    }, 500);
+    } catch (error) {
+      console.error(error);
+      setSavedStatus("Error saving the note");
+    }
   }, 1000);
 
   const editor = useEditor({
@@ -479,6 +478,7 @@ const Editor = ({
       <div className="w-full">
         {" "}
         <EditorContent editor={editor} />
+        <div>{savedStatus}</div>
       </div>
     </div>
   );

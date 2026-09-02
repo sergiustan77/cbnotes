@@ -375,7 +375,7 @@ const Editor = ({
     content: string,
     noteContentText: string,
   ) => {
-    const response = await fetch("/api/notes/update", {
+    const response = await fetch(`/api/notes/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

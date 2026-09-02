@@ -1,8 +1,6 @@
 "use client";
 import type NoteType from "@/lib/interfaces/Note";
 import React from "react";
-import { Loader2, Save, X } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 import { useAuth } from "@clerk/nextjs";
 
@@ -23,7 +21,6 @@ type Props = {
 const Note = ({ note, initialTags }: Props) => {
   const date = new Date(note.updated_at);
   const { userId } = useAuth();
-  const router = useRouter();
 
   const [content, setContent] = React.useState(note.content);
   const [title, setTitle] = React.useState(note.title);
@@ -36,25 +33,32 @@ const Note = ({ note, initialTags }: Props) => {
   );
 
   const updateTitle = async (title: string) => {
-    const res = await fetch("/api/notes/update/title", {
-      method: "POST",
+    const response = await fetch(`/api/notes/${note.id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
-        id: note.id,
-        userId: userId,
-        title: title,
+        title,
       }),
-    }).then(() => {
-      router.refresh();
     });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.message || "Failed to update title");
+    }
   };
 
-  const debouncedTitleUpdate = useDebouncedCallback(async (title) => {
-    setNoteContentText(noteContentText);
-    await updateTitle(title);
-    // Simulate a delay in saving.
-
-    setTimeout(() => {}, 500);
-  }, 1000);
+  const debouncedTitleUpdate = useDebouncedCallback(
+    async (nextTitle: string) => {
+      try {
+        await updateTitle(nextTitle);
+      } catch (error) {
+        console.error("Failed to update title:", error);
+      }
+    },
+    500,
+  );
 
   const handleSetUpdate = (value: boolean) => {
     setUpdate(value);

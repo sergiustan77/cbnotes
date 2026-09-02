@@ -1,35 +1,51 @@
 import { NextRequest, NextResponse } from "next/server";
-import { driver } from "@/lib/neo4j";
+import { auth } from "@clerk/nextjs/server";
+import { prisma } from "@/lib/prisma";
 
-export async function GET(request: NextRequest) {
-  const { searchParams } = new URL(request.url);
+export async function GET(_request: NextRequest) {
+  const { userId } = await auth();
 
-  const userId = searchParams.get("userId");
-  const session = driver.session();
+  if (!userId) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
 
   try {
-    const resNotes = await session.executeRead((tx) =>
-      tx.run(
-        `MATCH (u:User {userId: $userId})-[r:HAS_NOTE]->(n:Note)
-         OPTIONAL MATCH (n)-[:TAGGED_IN]->(t:Tag)
-         WITH COLLECT(DISTINCT t.name) AS tags, n
-         WITH {title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags} as note
-         WITH COLLECT(note) as notes
-         OPTIONAL MATCH (u:User {userId: $userId})-[:HAS_TAG]->(t:Tag)
-         WITH DISTINCT COLLECT(t.name) as tags, notes
-         RETURN {notes: notes, tags: tags} as notes
-    `,
-        { userId }
-      )
-    );
-
-    const notes = resNotes.records.map((r) => r.get("notes"));
-    await session.close();
-    return NextResponse.json(notes[0]);
-  } catch (error) {
-    return NextResponse.json({
-      status: 500,
-      message: "Error while getting the notes!",
+    const notes = await prisma.note.findMany({
+      where: {
+        userId,
+      },
+      orderBy: {
+        updatedAt: "desc",
+      },
     });
+
+    if (!notes) {
+      return NextResponse.json(
+        { message: "No notes found for the user" },
+        { status: 404 },
+      );
+    }
+
+    return NextResponse.json(
+      notes.map((note) => {
+        return {
+          id: note.id,
+          title: note.title,
+          content: note.content,
+          noteContentText: note.contentText,
+          created_at: note.createdAt.toISOString(),
+          updated_at: note.updatedAt.toISOString(),
+          tags: [],
+          linkedNotes: [],
+        };
+      }),
+    );
+  } catch (error) {
+    console.error("Failed to retrieve note:", error);
+
+    return NextResponse.json(
+      { message: "Failed to retrieve notes" },
+      { status: 500 },
+    );
   }
 }

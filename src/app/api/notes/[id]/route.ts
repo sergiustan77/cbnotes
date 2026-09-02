@@ -48,3 +48,75 @@ export async function GET(_request: Request, { params }: RouteContext) {
     );
   }
 }
+
+export async function PATCH(request: Request, { params }: RouteContext) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+    const { title, content, noteContentText } = await request.json();
+
+    const data: {
+      title?: string;
+      content?: string;
+      contentText?: string;
+    } = {};
+
+    if (title !== undefined) {
+      if (typeof title !== "string") {
+        return NextResponse.json(
+          { message: "Title must be a string" },
+          { status: 400 },
+        );
+      }
+
+      data.title = title.trim() || "Untitled";
+    }
+
+    if (content !== undefined) {
+      if (typeof content !== "string") {
+        return NextResponse.json(
+          { message: "Content must be a string" },
+          { status: 400 },
+        );
+      }
+      data.content = content;
+    }
+
+    if (noteContentText !== undefined) {
+      if (typeof noteContentText !== "string") {
+        return NextResponse.json(
+          { message: "Content text must be a string" },
+          { status: 400 },
+        );
+      }
+
+      data.contentText = noteContentText;
+    }
+
+    const result = await prisma.note.updateMany({
+      where: {
+        id,
+        userId,
+      },
+      data,
+    });
+
+    if (result.count === 0) {
+      return NextResponse.json({ message: "Note not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Note updated" }, { status: 200 });
+  } catch (error) {
+    console.error("Failed to update note:", error);
+
+    return NextResponse.json(
+      { message: "Failed to update note" },
+      { status: 500 },
+    );
+  }
+}

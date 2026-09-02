@@ -31,19 +31,18 @@ const MobileMenu = (props: Props) => {
   const { userId } = useAuth();
   const router = useRouter();
   const newNote = async () => {
-    const id = randomUUID();
-    const res = await fetch("/api/notes/new", {
+    const response = await fetch("/api/notes/new", {
       method: "POST",
-      body: JSON.stringify({
-        userId: userId as string,
-        title: "",
-        content: "",
-        noteContentText: "",
-        id: id,
-      }),
-    }).then(() => {
-      router.push(`/notes/${id}`);
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    router.push(`/notes${data.note.id}`);
   };
   return (
     <Sheet>
@@ -67,7 +66,7 @@ const MobileMenu = (props: Props) => {
                       variant: "outline",
                       size: "default",
                     }),
-                    "flex w-full gap-2"
+                    "flex w-full gap-2",
                   )}
                   href={`/notes/tags`}
                 >
@@ -83,7 +82,7 @@ const MobileMenu = (props: Props) => {
                       variant: "outline",
                       size: "default",
                     }),
-                    "flex w-full gap-2"
+                    "flex w-full gap-2",
                   )}
                 >
                   <StickyNote className="w-6 h-6" /> All notes

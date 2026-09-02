@@ -20,20 +20,20 @@ const montserrat = Montserrat({
 const Nav = (props: Props) => {
   const router = useRouter();
   const { user } = useUser();
+
   const newNote = async () => {
-    const id = randomUUID();
-    const res = await fetch("/api/notes/new", {
+    const response = await fetch("/api/notes/new", {
       method: "POST",
-      body: JSON.stringify({
-        userId: user?.id.toString(),
-        title: "",
-        content: "",
-        noteContentText: "",
-        id: id,
-      }),
-    }).then(() => {
-      router.push(`/notes/${id}`);
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error(data.message);
+      return;
+    }
+
+    router.push(`/notes${data.note.id}`);
   };
 
   return (
@@ -82,7 +82,7 @@ const Nav = (props: Props) => {
                     buttonVariants({
                       variant: "ghost",
                       size: "icon",
-                    })
+                    }),
                   )}
                   href={`/notes/tags`}
                 >

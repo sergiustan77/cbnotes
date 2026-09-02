@@ -2,7 +2,7 @@
 import { cn } from "@/lib/utils";
 import ThemeToggle from "./ui/ThemeToggle";
 import { Button, buttonVariants } from "./ui/button";
-import { SignedIn, SignedOut, UserButton } from "@clerk/nextjs";
+import { Show, UserButton } from "@clerk/nextjs";
 import { useUser } from "@clerk/nextjs";
 import { PlusIcon, StickyNote, Tag, TagsIcon } from "lucide-react";
 import Link from "next/link";
@@ -63,13 +63,13 @@ const Nav = (props: Props) => {
             <ThemeToggle />
           </div>
 
-          <SignedIn>
+          <Show when="signed-in">
             {" "}
             <div className="md:hidden flex gap-4 ">
-              <SignedIn>
+              <Show when="signed-in">
                 {" "}
                 <UserButton />
-              </SignedIn>
+              </Show>
               <MobileMenu />
             </div>
             <div className=" gap-2 hidden md:flex">
@@ -100,8 +100,8 @@ const Nav = (props: Props) => {
                 <UserButton />
               </div>
             </div>{" "}
-          </SignedIn>
-          <SignedOut>
+          </Show>
+          <Show when="signed-out">
             <div className="w-full flex gap-4">
               {" "}
               <Link
@@ -117,7 +117,7 @@ const Nav = (props: Props) => {
                 Sign Up
               </Link>
             </div>
-          </SignedOut>
+          </Show>
         </div>
       </div>
     </div>

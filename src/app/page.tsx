@@ -3,7 +3,7 @@ import React from "react";
 import { buttonVariants } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
-import { SignedOut, SignedIn } from "@clerk/nextjs";
+import { Show } from "@clerk/nextjs";
 
 const Page = () => {
   return (
@@ -25,7 +25,7 @@ const Page = () => {
           <h1 className="p-2 z-10 animate-text bg-gradient-to-r from-cyan-600 to-fuchsia-600 bg-clip-text text-transparent  scroll-m-20 text-5xl font-extrabold tracking-tight lg:text-5xl ">
             All your ideas in one place
           </h1>
-          <SignedOut>
+          <Show when="signed-out">
             {" "}
             <Link
               href={"/auth/sign-in"}
@@ -33,15 +33,15 @@ const Page = () => {
             >
               Get Started
             </Link>
-          </SignedOut>
-          <SignedIn>
+          </Show>
+          <Show when="signed-in">
             <Link
               href={"/notes"}
               className={buttonVariants({ variant: "outline", size: "xl" })}
             >
               Go to your notes
             </Link>
-          </SignedIn>
+          </Show>
         </div>
       </div>
     </div>

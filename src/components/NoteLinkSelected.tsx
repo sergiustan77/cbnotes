@@ -7,7 +7,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import parse, { Element, domToReact } from "html-react-parser";
+import parse, { type DOMNode, Element, domToReact } from "html-react-parser";
 import Image from "next/image";
 import Note from "@/lib/interfaces/Note";
 import { Button } from "./ui/button";
@@ -30,7 +30,7 @@ const NoteLinkSelected = ({ linkTo, note, userId, setSelectedNote }: Props) => {
     <Card
       className={cn(
         "w-full h-64  overflow-hidden hover:border-primary hover:cursor-pointer",
-        isSelected && "border-primary"
+        isSelected && "border-primary",
       )}
       onClick={() => {
         setSelectedNote(linkTo);
@@ -49,7 +49,9 @@ const NoteLinkSelected = ({ linkTo, note, userId, setSelectedNote }: Props) => {
               const node = domNode as Element;
               if (node.attribs && node.name === "a") {
                 return (
-                  <span className="underline">{domToReact(node.children)}</span>
+                  <span className="underline">
+                    {domToReact(node.children as DOMNode[])}
+                  </span>
                 );
               }
 
@@ -57,7 +59,7 @@ const NoteLinkSelected = ({ linkTo, note, userId, setSelectedNote }: Props) => {
                 node.attribs &&
                 (node.name === "p" || node.name.startsWith("h"))
               ) {
-                return <p> {domToReact(node.children)}</p>;
+                return <p> {domToReact(node.children as DOMNode[])}</p>;
               }
               if (
                 node.attribs &&

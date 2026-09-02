@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { driver } from "@/lib/neo4j";
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 
 import React from "react";
@@ -27,8 +27,8 @@ const getTags = async (userId: string) => {
         WITH t, COLLECT(n) AS notes
         RETURN {tag: t.name, notes: notes} as tag
              `,
-      { userId }
-    )
+      { userId },
+    ),
   );
 
   const tags = resTags.records.map((r) => r.get("tag"));
@@ -36,7 +36,7 @@ const getTags = async (userId: string) => {
   return tags;
 };
 const page = async (props: Props) => {
-  const { userId } = auth();
+  const { userId } = await auth();
   const tags = await getTags(userId as string);
   return (
     <div className="container mx-auto h-[90vh]  flex flex-col gap-4 my-6 ">
@@ -56,7 +56,7 @@ const page = async (props: Props) => {
                   <div>{t.tag}</div>
                 </Badge>
               </Link>
-            )
+            ),
         )}
       </div>
     </div>

@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Color } from "@tiptap/extension-color";
 import ListItem from "@tiptap/extension-list-item";
-import TextStyle from "@tiptap/extension-text-style";
+import { TextStyle } from "@tiptap/extension-text-style";
 import { EditorContent, useEditor } from "@tiptap/react";
 import ImageResize from "./image";
 import StarterKit from "@tiptap/starter-kit";
@@ -383,7 +383,7 @@ const Editor = ({
 
     content: string,
     noteContentText: string,
-    userId: string
+    userId: string,
   ) => {
     const res = await fetch("/api/notes/update", {
       method: "POST",

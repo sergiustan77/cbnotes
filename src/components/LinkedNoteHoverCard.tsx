@@ -11,7 +11,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import parse, { Element, domToReact } from "html-react-parser";
+import parse, { type DOMNode, Element, domToReact } from "html-react-parser";
 import Link from "next/link";
 type Props = {
   linkedNote: any;
@@ -24,7 +24,7 @@ import Image from "next/image";
 
 import { ScrollArea } from "./ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Activity, Trash2, Youtube } from "lucide-react";
+import { Activity, Trash2, Video } from "lucide-react";
 const imageLoader = ({ src }: { src: string }) => {
   return src;
 };
@@ -54,7 +54,7 @@ const LinkedNoteHoverCard = ({
           <Link
             className={cn(
               buttonVariants({ variant: "outline" }),
-              "rounded-r-none  hover:bg-accent "
+              "rounded-r-none  hover:bg-accent ",
             )}
             href={`/notes/${linkedNote.id}`}
           >
@@ -101,13 +101,13 @@ const LinkedNoteHoverCard = ({
                 if (node.attribs && node.name === "a") {
                   return (
                     <span className="underline">
-                      {domToReact(node.children)}
+                      {domToReact(node.children as DOMNode[])}
                     </span>
                   );
                 }
 
                 if (node.attribs && node.name.startsWith("h")) {
-                  return <p> {domToReact(node.children)}</p>;
+                  return <p> {domToReact(node.children as DOMNode[])}</p>;
                 }
 
                 if (node.attribs && node.name === "iframe") {
@@ -115,7 +115,7 @@ const LinkedNoteHoverCard = ({
 
                   if (
                     (result = node.attribs.src.match(
-                      /youtube\.com.*(\?v=|\/embed\/)(.{11})/
+                      /youtube\.com.*(\?v=|\/embed\/)(.{11})/,
                     ))
                   ) {
                     video_id = result.pop();
@@ -128,7 +128,7 @@ const LinkedNoteHoverCard = ({
                   return (
                     <div className="relative my-2  ">
                       <div className="absolute flex place-content-center items-center bg-gray-800/30  rounded-md w-full h-full z-50">
-                        <Youtube className=" text-white rounded-lg " />
+                        <Video className=" text-white rounded-lg " />
                       </div>
                       <div className="relative aspect-video rounded-md">
                         {" "}

@@ -4,16 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Loader2, Tag, TagsIcon } from "lucide-react";
 import Notes from "@/components/Notes";
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import TagInfo from "@/components/TagInfo";
 import { driver } from "@/lib/neo4j";
 import Note from "@/lib/interfaces/Note";
 
 type Props = {
-  params: {
-    tag: string;
-  };
+  params: Promise<{ tag: string }>;
 };
 const getNotesByTag = async (userId: string, tag: string) => {
   const session = driver.session();
@@ -25,8 +23,8 @@ const getNotesByTag = async (userId: string, tag: string) => {
         MATCH (n)-[:TAGGED_IN]->(note_tag:Tag)<-[:HAS_TAG]-(u)
         WITH COLLECT(note_tag.name) as tags, n, t
           RETURN DISTINCT { title: n.title, content: n.content, id: n.id, updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags } as note`,
-        { userId, tag }
-      )
+        { userId, tag },
+      ),
     );
 
     await session.close();
@@ -44,8 +42,9 @@ const getNotesByTag = async (userId: string, tag: string) => {
 
   // return await res.json();
 };
-const page = async ({ params: { tag } }: Props) => {
-  const { userId } = auth();
+const page = async ({ params }: Props) => {
+  const { tag } = await params;
+  const { userId } = await auth();
   const notes: any = await getNotesByTag(userId as string, decodeURI(tag));
 
   return (

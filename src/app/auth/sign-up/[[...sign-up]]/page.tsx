@@ -5,7 +5,7 @@ const Page = () => {
   return (
     <div className="container mx-auto flex justify-center items-center h-[90vh]">
       <SignUp
-        afterSignUpUrl={"/create-user"}
+        fallbackRedirectUrl={"/create-user"}
         signInUrl={"/auth/sign-in"}
         appearance={{
           elements: {
@@ -42,7 +42,7 @@ const Page = () => {
             identityPreviewEditButton: "text-muted-foreground",
             formResendCodeLink: "text-muted-foreground font-medium",
           },
-          layout: {
+          options: {
             socialButtonsPlacement: "bottom",
           },
         }}

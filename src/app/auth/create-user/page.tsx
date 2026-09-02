@@ -1,5 +1,5 @@
 import { driver } from "@/lib/neo4j";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 import { Loader2 } from "lucide-react";
 import { redirect } from "next/navigation";
 import React from "react";
@@ -17,7 +17,7 @@ const createUserNode = async (userId: string) => {
   });
 };
 const page = async (props: Props) => {
-  const { userId } = auth();
+  const { userId } = await auth();
   const creatUser = await createUserNode(userId as string);
   return (
     <div className="w-full h-[100vh] text-4xl grid gap-4">

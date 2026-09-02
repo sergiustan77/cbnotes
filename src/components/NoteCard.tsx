@@ -11,11 +11,11 @@ import Note from "@/lib/interfaces/Note";
 
 import Link from "next/link";
 
-import { Element, domToReact } from "html-react-parser";
+import { type DOMNode, Element, domToReact } from "html-react-parser";
 import parse from "html-react-parser";
 import { Badge } from "./ui/badge";
 import Image from "next/image";
-import { Youtube } from "lucide-react";
+import { Video } from "lucide-react";
 
 type Props = {
   note: Note;
@@ -58,7 +58,7 @@ const NoteCard = ({ note }: Props) => {
                 if (node.attribs && node.name === "a") {
                   return (
                     <span className="underline">
-                      {domToReact(node.children)}
+                      {domToReact(node.children as DOMNode[])}
                     </span>
                   );
                 }
@@ -67,7 +67,7 @@ const NoteCard = ({ note }: Props) => {
 
                   if (
                     (result = node.attribs.src.match(
-                      /youtube\.com.*(\?v=|\/embed\/)(.{11})/
+                      /youtube\.com.*(\?v=|\/embed\/)(.{11})/,
                     ))
                   ) {
                     video_id = result.pop();
@@ -80,7 +80,7 @@ const NoteCard = ({ note }: Props) => {
                   return (
                     <div className="relative my-2 w-full">
                       <div className="absolute flex place-content-center items-center bg-gray-800/30  w-full h-full z-50">
-                        <Youtube className=" text-white rounded-lg " />
+                        <Video className=" text-white rounded-lg " />
                       </div>
                       <div className="relative aspect-video rounded-md">
                         {" "}

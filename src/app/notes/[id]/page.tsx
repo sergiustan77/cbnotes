@@ -1,5 +1,5 @@
 import React from "react";
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import Note from "@/components/Note";
 import { notFound } from "next/navigation";
@@ -7,9 +7,7 @@ import { driver } from "@/lib/neo4j";
 import TagsField from "@/components/TagsField";
 
 type Props = {
-  params: {
-    id: string;
-  };
+  params: Promise<{ id: string }>;
 };
 
 const getNote = async (userId: string, noteId: string) => {
@@ -26,8 +24,8 @@ const getNote = async (userId: string, noteId: string) => {
   OPTIONAL MATCH (n)-[r:LINKED_TO]->(n_link:Note)<-[:HAS_NOTE]-(u)
 WITH COLLECT(DISTINCT t.name) AS tags, n, COLLECT(DISTINCT {title: n_link.title, content: n_link.content, id: n_link.id , updated_at: apoc.date.toISO8601(datetime(n_link.updated_at).epochMillis, "ms"), linkDescription: r.description } ) as linkedNotes 
   RETURN { title: n.title, content: n.content, noteContentText: n.noteContentText, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms"), updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags, linkedNotes: linkedNotes} as note`,
-      { userId, id: noteId }
-    )
+      { userId, id: noteId },
+    ),
   );
 
   await session.close();
@@ -35,8 +33,9 @@ WITH COLLECT(DISTINCT t.name) AS tags, n, COLLECT(DISTINCT {title: n_link.title,
   return note;
 };
 
-const page = async ({ params: { id } }: Props) => {
-  const { userId } = auth();
+const page = async ({ params }: Props) => {
+  const { userId } = await auth();
+  const { id } = await params;
   const note = await getNote(userId as string, id);
 
   if (!note) {

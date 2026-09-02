@@ -8,7 +8,7 @@ import {
 import { Button, buttonVariants } from "./ui/button";
 import { Label } from "./ui/label";
 import Link from "next/link";
-import { UserButton, SignedIn, SignedOut, useAuth } from "@clerk/nextjs";
+import { UserButton, Show, useAuth } from "@clerk/nextjs";
 import {
   Sheet,
   SheetClose,
@@ -57,7 +57,7 @@ const MobileMenu = (props: Props) => {
           <SheetTitle>Menu</SheetTitle>
         </SheetHeader>
         <div className=" py-4">
-          <SignedIn>
+          <Show when="signed-in">
             <div className=" gap-4 grid w-full place-items-center">
               <SheetClose asChild>
                 <Link
@@ -100,9 +100,9 @@ const MobileMenu = (props: Props) => {
                 </Button>
               </SheetClose>
             </div>{" "}
-          </SignedIn>
+          </Show>
 
-          <SignedOut>
+          <Show when="signed-out">
             <div className="flex gap-4">
               {" "}
               <Link
@@ -118,7 +118,7 @@ const MobileMenu = (props: Props) => {
                 Sign Up
               </Link>
             </div>
-          </SignedOut>
+          </Show>
         </div>
       </SheetContent>
     </Sheet>

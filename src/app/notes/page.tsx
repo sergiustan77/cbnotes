@@ -1,6 +1,6 @@
 import React from "react";
 
-import { auth } from "@clerk/nextjs";
+import { auth } from "@clerk/nextjs/server";
 
 import SearchNotes from "@/components/SearchNotes";
 import { driver } from "@/lib/neo4j";
@@ -29,8 +29,8 @@ const getNotes = async (userId: string) => {
     WITH COLLECT(t.name) as tags, notes
     RETURN {notes: notes, tags: tags} as notes
     `,
-      { userId }
-    )
+      { userId },
+    ),
   );
 
   const notes = resNotes.records.map((r) => r.get("notes"));
@@ -39,7 +39,7 @@ const getNotes = async (userId: string) => {
 };
 
 const page = async ({}: Props) => {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   const notes: any = await getNotes(userId as string);
 

@@ -5,9 +5,9 @@ const Page = () => {
   return (
     <div className="container mx-auto flex justify-center items-center h-[90vh]">
       <SignIn
-        afterSignUpUrl={"/create-user"}
+        signUpFallbackRedirectUrl={"/create-user"}
         signUpUrl="/auth/sign-up"
-        afterSignInUrl={"/notes"}
+        fallbackRedirectUrl={"/notes"}
         appearance={{
           elements: {
             identityPreview: "border-border bg-background",
@@ -47,7 +47,7 @@ const Page = () => {
               "text-primary font-semibold hover:text-primary/90",
             socialButtonsBlockButtonText: "text-muted-foreground",
           },
-          layout: {
+          options: {
             socialButtonsPlacement: "bottom",
           },
         }}

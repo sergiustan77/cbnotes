@@ -1,11 +1,11 @@
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import parse, { Element, domToReact } from "html-react-parser";
+import parse, { type DOMNode, Element, domToReact } from "html-react-parser";
 import Image from "next/image";
 import Note from "@/lib/interfaces/Note";
 
 import { cn } from "@/lib/utils";
-import { Youtube } from "lucide-react";
+import { Video } from "lucide-react";
 
 type Props = {
   linkTo: Note;
@@ -30,7 +30,7 @@ const NoteLink = ({
     <Card
       className={cn(
         "w-full  h-64  overflow-hidden hover:border-primary hover:cursor-pointer",
-        selectedNote && selectedNote.id === linkTo.id && "border-primary "
+        selectedNote && selectedNote.id === linkTo.id && "border-primary ",
       )}
       onClick={() => {
         setSelectedNote(linkTo);
@@ -49,19 +49,23 @@ const NoteLink = ({
               const node = domNode as Element;
               if (node.attribs && node.name === "a") {
                 return (
-                  <span className="underline">{domToReact(node.children)}</span>
+                  <span className="underline">
+                    {domToReact(node.children as DOMNode[])}
+                  </span>
                 );
               }
 
               if (node.attribs && node.name.startsWith("h")) {
-                return <p className=""> {domToReact(node.children)}</p>;
+                return (
+                  <p className=""> {domToReact(node.children as DOMNode[])}</p>
+                );
               }
               if (node.attribs && node.name === "iframe") {
                 let video_id, result, thumbnail;
 
                 if (
                   (result = node.attribs.src.match(
-                    /youtube\.com.*(\?v=|\/embed\/)(.{11})/
+                    /youtube\.com.*(\?v=|\/embed\/)(.{11})/,
                   ))
                 ) {
                   video_id = result.pop();
@@ -74,7 +78,7 @@ const NoteLink = ({
                 return (
                   <div className="relative my-2">
                     <div className="absolute flex place-content-center items-center bg-gray-800/30  w-full h-full z-50">
-                      <Youtube className=" text-white rounded-lg " />
+                      <Video className=" text-white rounded-lg " />
                     </div>
                     <div className="relative aspect-video rounded-md">
                       {" "}

@@ -6,16 +6,13 @@ export async function GET(
   {
     params,
   }: {
-    params: {
-      id: string;
-    };
-  }
+    params: Promise<{ id: string }>;
+  },
 ) {
+  const { id: noteId } = await params;
   const { searchParams } = new URL(request.url);
 
   const userId = searchParams.get("userId");
-  const noteId = params.id;
-
   const session = driver.session();
 
   try {
@@ -27,11 +24,12 @@ export async function GET(
       OPTIONAL MATCH (n)-[r:LINKED_TO]->(n_link:Note)<-[:HAS_NOTE]-(u)
   WITH COLLECT(DISTINCT t.name) AS tags, n, COLLECT(DISTINCT {title: n_link.title, content: n_link.content, id: n_link.id , updated_at: apoc.date.toISO8601(datetime(n_link.updated_at).epochMillis, "ms"), linkDescription: r.description } ) as linkedNotes 
       RETURN { title: n.title, content: n.content, id: n.id, created_at: apoc.date.toISO8601(datetime(n.created_at).epochMillis, "ms"), updated_at: apoc.date.toISO8601(datetime(n.updated_at).epochMillis, "ms"), tags: tags, linkedNotes: linkedNotes} as note`,
-        { userId, id: noteId }
-      )
+        { userId, id: noteId },
+      ),
     );
 
     await session.close();
+
     const note = res.records.map((r) => r.get("note"))[0];
 
     return NextResponse.json(note);

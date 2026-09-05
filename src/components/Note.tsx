@@ -12,6 +12,16 @@ import LinkNotes from "./LinkNotes";
 import LinkedNotesView from "./LinkedNotesView";
 import { Input } from "./ui/input";
 import { useDebouncedCallback } from "use-debounce";
+import { Button } from "./ui/button";
+import { EllipsisVertical, Trash, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "./ui/dropdown-menu";
 
 type Props = {
   note: NoteType;
@@ -25,12 +35,13 @@ const Note = ({ note, initialTags }: Props) => {
   const [content, setContent] = React.useState(note.content);
   const [title, setTitle] = React.useState(note.title);
   const [tags, setTags] = React.useState<String[]>(note.tags);
-
-  const [update, setUpdate] = React.useState(false);
+  const [isDeleting, setIsDeleting] = React.useState(false);
 
   const [noteContentText, setNoteContentText] = React.useState<string>(
     note.noteContentText,
   );
+
+  const router = useRouter();
 
   const updateTitle = async (title: string) => {
     const response = await fetch(`/api/notes/${note.id}`, {
@@ -60,8 +71,33 @@ const Note = ({ note, initialTags }: Props) => {
     500,
   );
 
-  const handleSetUpdate = (value: boolean) => {
-    setUpdate(value);
+  const deleteNote = async () => {
+    const confirmed = window.confirm(
+      `Are you sure you want to delete "${title || "Untitled"}"?`,
+    );
+
+    if (!confirmed || isDeleting) {
+      return;
+    }
+
+    setIsDeleting(true);
+
+    try {
+      const response = await fetch(`/api/notes/${note.id}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || "Failed to delete the note");
+      }
+
+      router.replace("/notes");
+      router.refresh();
+    } catch (error) {
+      console.error("Failed to delete note:", error);
+      setIsDeleting(false);
+    }
   };
 
   return (
@@ -89,11 +125,34 @@ const Note = ({ note, initialTags }: Props) => {
               setTitle(e.target.value);
               debouncedTitleUpdate(e.target.value);
             }}
-          />{" "}
-          <LinkNotes update={update} setUpdate={handleSetUpdate} note={note} />
+          />
+
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                aria-label="Open note actions"
+              >
+                <EllipsisVertical />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className=" ">
+              <DropdownMenuGroup>
+                <DropdownMenuItem onClick={deleteNote} disabled={isDeleting}>
+                  <Trash2 className="mr-2 h-4 w-4 text-red-600" />
+                  <span className="text-red-600">
+                    {isDeleting ? "Deleting..." : "Delete"}
+                  </span>
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          {/* <LinkNotes update={update} setUpdate={handleSetUpdate} note={note} /> */}
         </div>
 
-        <div className="mt-2">
+        {/* <div className="mt-2">
           {" "}
           <TagsField
             setTags={setTags}
@@ -101,15 +160,15 @@ const Note = ({ note, initialTags }: Props) => {
             userId={userId as string}
             noteId={note.id}
           />
-        </div>
+        </div> */}
 
-        <LinkedNotesView
+        {/* <LinkedNotesView
           note={note.id}
           linkedNotesArray={note.linkedNotes}
           update={update}
           setUpdate={setUpdate}
           userId={userId as string}
-        />
+        /> */}
       </div>
 
       <div className="w-full ">

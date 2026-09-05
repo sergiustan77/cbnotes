@@ -12,8 +12,8 @@ export async function POST(request: NextRequest) {
         `MATCH (u:User {userId: $userId})-[:HAS_NOTE]->(n:Note {id: $id})
          DETACH DELETE n
       `,
-        { userId, id }
-      )
+        { userId, id },
+      ),
     );
 
     await session.close();

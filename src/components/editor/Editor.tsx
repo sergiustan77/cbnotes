@@ -463,8 +463,8 @@ const Editor = ({
   return (
     <div className="w-full flex flex-col gap-2 ">
       {" "}
-      <div className="w-full flex place-content-center  sticky top-16 z-[15] ">
-        <div className="w-fit border rounded-lg bg-background">
+      <div className="w-full flex  place-content-center sticky top-16 z-[15] ">
+        <div className="w-fit flex border rounded-lg bg-background">
           <MenuBar
             setVideoLink={setVideoLink}
             videoLink={videoLink}
@@ -473,12 +473,14 @@ const Editor = ({
             editor={editor}
             savedStatus={savedStatus}
           />
+          <div className="flex place-items-center px-4 font-bold">
+            {savedStatus}
+          </div>
         </div>
       </div>
       <div className="w-full">
         {" "}
         <EditorContent editor={editor} />
-        <div>{savedStatus}</div>
       </div>
     </div>
   );

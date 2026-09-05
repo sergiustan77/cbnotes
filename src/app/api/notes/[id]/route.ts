@@ -98,6 +98,13 @@ export async function PATCH(request: Request, { params }: RouteContext) {
       data.contentText = noteContentText;
     }
 
+    if (Object.keys(data).length === 0) {
+      return NextResponse.json(
+        { message: "No valid fields were provided" },
+        { status: 400 },
+      );
+    }
+
     const result = await prisma.note.updateMany({
       where: {
         id,
@@ -116,6 +123,40 @@ export async function PATCH(request: Request, { params }: RouteContext) {
 
     return NextResponse.json(
       { message: "Failed to update note" },
+      { status: 500 },
+    );
+  }
+}
+
+export async function DELETE(_request: Request, { params }: RouteContext) {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await params;
+
+    const result = await prisma.note.deleteMany({
+      where: {
+        id,
+        userId,
+      },
+    });
+
+    if (result.count === 0) {
+      return NextResponse.json({ message: "Note not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(
+      { message: "Note deleted successfully" },
+      { status: 200 },
+    );
+  } catch (error) {
+    console.error("Failed to delete the note: ", error);
+    return NextResponse.json(
+      { message: "Failed to delete the note" },
       { status: 500 },
     );
   }

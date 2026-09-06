@@ -9,7 +9,7 @@ type Props = {
 
 const Notes = ({ notes }: Props) => {
   return (
-    <div className="w-full mt-6">
+    <div className="w-full ">
       {notes ? (
         notes.length > 0 ? (
           <div className="   w-full h-full flex flex-wrap place-content-start gap-4  ">

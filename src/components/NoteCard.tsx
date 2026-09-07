@@ -1,118 +1,73 @@
-"use client";
-import React from "react";
-import {
-  Card,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardHeader,
-} from "@/components/ui/card";
-import Note from "@/lib/interfaces/Note";
-
 import Link from "next/link";
 
-import { type DOMNode, Element, domToReact } from "html-react-parser";
-import parse from "html-react-parser";
+import type Note from "@/lib/interfaces/Note";
+
 import { Badge } from "./ui/badge";
-import Image from "next/image";
-import { Video } from "lucide-react";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
 
 type Props = {
   note: Note;
 };
 
+const MAX_VISIBLE_TAGS = 3;
+
 const NoteCard = ({ note }: Props) => {
-  const imageLoader = ({ src }: { src: string }) => {
-    return src;
-  };
+  const visibleTags = note.tags.slice(0, MAX_VISIBLE_TAGS);
+  const hiddenTagCount = note.tags.length - visibleTags.length;
+
+  const updatedDate = new Date(note.updated_at).toLocaleDateString("ro-RO", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+
   return (
     <Link
-      className="flex-auto w-full md:w-64  overflow-hidden h-80 rounded-lg "
       href={`/notes/${note.id}`}
+      className="group block h-full"
+      aria-label={`Open note: ${note.title || "Untitled"}`}
     >
-      <Card className="w-full h-80 overflow-hidden hover:border-primary">
-        <CardHeader className="h-25">
-          <CardTitle>{note.title}</CardTitle>
-          <CardDescription>
-            {new Date(note.updated_at).toLocaleString("ro-RO", {
-              day: "numeric",
-              month: "long",
-              year: "numeric",
-            })}
-          </CardDescription>
+      <Card className="flex h-full min-h-64 flex-col overflow-hidden transition-all duration-200 group-hover:-translate-y-1 group-hover:border-primary/50 group-hover:shadow-md">
+        <CardHeader className="space-y-2">
+          <div className="flex items-start justify-between gap-4">
+            <CardTitle className="line-clamp-2 text-xl">
+              {note.title || "Untitled"}
+            </CardTitle>
 
-          <div className=" overflow-hidden w-full flex flex-wrap gap-1 h-6">
-            {note.tags.map((t, i) => (
-              <Badge key={i} className="">
-                {t}
-              </Badge>
-            ))}
+            <span className="shrink-0 text-xs text-muted-foreground">
+              {updatedDate}
+            </span>
           </div>
+
+          <CardDescription className="line-clamp-4 whitespace-pre-wrap break-words">
+            {note.noteContentText.trim() || "No content yet."}
+          </CardDescription>
         </CardHeader>
 
-        <CardContent className="h-55 pb-24 w-full  overflow-hidden break-all flex place-content-start  ">
-          <div className="overflow-hidden px-2 h-44 w-full ">
-            {parse(note.content, {
-              replace: (domNode) => {
-                const node = domNode as Element;
-                if (node.attribs && node.name === "a") {
-                  return (
-                    <span className="underline">
-                      {domToReact(node.children as DOMNode[])}
-                    </span>
-                  );
-                }
-                if (node.attribs && node.name === "iframe") {
-                  let video_id, result, thumbnail;
+        <CardContent className="mt-auto pt-0">
+          {note.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5">
+              {visibleTags.map((tag) => (
+                <Badge
+                  key={tag.id}
+                  variant="secondary"
+                  className="max-w-32 truncate"
+                >
+                  {tag.name}
+                </Badge>
+              ))}
 
-                  if (
-                    (result = node.attribs.src.match(
-                      /youtube\.com.*(\?v=|\/embed\/)(.{11})/,
-                    ))
-                  ) {
-                    video_id = result.pop();
-                  } else if (
-                    (result = node.attribs.src.match(/youtu.be\/(.{11})/))
-                  ) {
-                    video_id = result.pop();
-                  }
-                  thumbnail = `https://i.ytimg.com/vi/${video_id}/hq720.jpg`;
-                  return (
-                    <div className="relative my-2 w-full">
-                      <div className="absolute flex place-content-center items-center bg-gray-800/30  w-full h-full z-50">
-                        <Video className=" text-white rounded-lg " />
-                      </div>
-                      <div className="relative aspect-video rounded-md">
-                        {" "}
-                        <Image
-                          className="rounded-md  "
-                          loader={imageLoader}
-                          alt={node.attribs.src}
-                          src={thumbnail}
-                          fill
-                          style={{
-                            objectFit: "contain",
-                          }}
-                        />
-                      </div>
-                    </div>
-                  );
-                }
-
-                if (node.attribs && node.name === "image-resizer") {
-                  return (
-                    <Image
-                      loader={imageLoader}
-                      alt={node.attribs.src}
-                      src={node.attribs.src.toString()}
-                      width={parseInt(node.attribs.width) || 300}
-                      height={parseInt(node.attribs.height) || 300}
-                    />
-                  );
-                }
-              },
-            })}
-          </div>
+              {hiddenTagCount > 0 && (
+                <Badge variant="outline">+{hiddenTagCount}</Badge>
+              )}
+            </div>
+          )}
         </CardContent>
       </Card>
     </Link>

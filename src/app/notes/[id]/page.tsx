@@ -15,6 +15,13 @@ const getNote = async (userId: string, noteId: string) => {
       id: noteId,
       userId,
     },
+    include: {
+      tagLinks: {
+        include: {
+          tag: true,
+        },
+      },
+    },
   });
 
   if (!note) {
@@ -28,8 +35,12 @@ const getNote = async (userId: string, noteId: string) => {
     noteContentText: note.contentText,
     created_at: note.createdAt.toISOString(),
     updated_at: note.updatedAt.toISOString(),
-
-    tags: [],
+    tags: note.tagLinks
+      .map((link) => ({
+        id: link.tag.id,
+        name: link.tag.name,
+      }))
+      .sort((first, second) => first.name.localeCompare(second.name)),
     linkedNotes: [],
   };
 };

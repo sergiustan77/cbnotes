@@ -22,10 +22,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
+import Tag from "@/lib/interfaces/Tag";
 
 type Props = {
   note: NoteType;
-  initialTags: string[];
+  initialTags: Tag[];
 };
 
 const Note = ({ note, initialTags }: Props) => {
@@ -34,7 +35,7 @@ const Note = ({ note, initialTags }: Props) => {
 
   const [content, setContent] = React.useState(note.content);
   const [title, setTitle] = React.useState(note.title);
-  const [tags, setTags] = React.useState<String[]>(note.tags);
+  const [tags, setTags] = React.useState<Tag[]>(note.tags);
   const [isDeleting, setIsDeleting] = React.useState(false);
 
   const [noteContentText, setNoteContentText] = React.useState<string>(
@@ -152,15 +153,10 @@ const Note = ({ note, initialTags }: Props) => {
           {/* <LinkNotes update={update} setUpdate={handleSetUpdate} note={note} /> */}
         </div>
 
-        {/* <div className="mt-2">
+        <div className="mt-2">
           {" "}
-          <TagsField
-            setTags={setTags}
-            tags={tags}
-            userId={userId as string}
-            noteId={note.id}
-          />
-        </div> */}
+          <TagsField setTags={setTags} tags={tags} noteId={note.id} />
+        </div>
 
         {/* <LinkedNotesView
           note={note.id}

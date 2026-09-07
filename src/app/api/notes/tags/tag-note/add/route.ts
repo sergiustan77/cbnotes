@@ -13,8 +13,8 @@ export async function POST(request: NextRequest) {
         MERGE (u)-[:HAS_TAG]->(t:Tag {name: $tag})
         CREATE (n)-[:TAGGED_IN]->(t)
         `,
-        { userId, noteId, tag }
-      )
+        { userId, noteId, tag },
+      ),
     );
 
     await session.close();

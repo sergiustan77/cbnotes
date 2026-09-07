@@ -30,6 +30,18 @@ const getNotes = async (userId: string, query: string, sort: NoteSort) => {
           }
         : {}),
     },
+    include: {
+      tagLinks: {
+        select: {
+          tag: {
+            select: {
+              id: true,
+              name: true,
+            },
+          },
+        },
+      },
+    },
     orderBy: NOTE_SORT_OPTIONS[sort],
   });
 
@@ -41,7 +53,12 @@ const getNotes = async (userId: string, query: string, sort: NoteSort) => {
       noteContentText: note.contentText,
       created_at: note.createdAt.toISOString(),
       updated_at: note.updatedAt.toISOString(),
-      tags: [],
+      tags: note.tagLinks
+        .map((link) => ({
+          id: link.tag.id,
+          name: link.tag.name,
+        }))
+        .sort((first, second) => first.name.localeCompare(second.name)),
       linkedNotes: [],
     };
   });

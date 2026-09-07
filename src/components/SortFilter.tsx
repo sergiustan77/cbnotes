@@ -1,5 +1,16 @@
 "use client";
-import React from "react";
+
+import {
+  ArrowDownAZ,
+  ArrowUpAZ,
+  ArrowUpDown,
+  CalendarArrowDown,
+  CalendarArrowUp,
+  ClockArrowDown,
+  ClockArrowUp,
+} from "lucide-react";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -10,89 +21,83 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  ArrowUpDown,
-  SortAsc,
-  SortDesc,
-  Calendar,
-  Clock,
-  ChevronsUpDown,
-  CaseSensitive,
-  Sunset,
-} from "lucide-react";
+import { DEFAULT_NOTE_SORT, isNoteSort, type NoteSort } from "@/lib/note-sort";
 
 type Props = {
-  sortBy: string;
-  setSortBy: (value: string) => void;
-  date: string;
-  setDate: (value: string) => void;
-  title: string;
-  setTitle: (value: string) => void;
+  initialSort: NoteSort;
 };
 
-const SortFilter = ({
-  sortBy,
-  setSortBy,
-  date,
-  setDate,
-  title,
-  setTitle,
-}: Props) => {
+const SortFilter = ({ initialSort }: Props) => {
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const handleSortChange = (value: string) => {
+    if (!isNoteSort(value)) {
+      return;
+    }
+
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (value === DEFAULT_NOTE_SORT) {
+      params.delete("sort");
+    } else {
+      params.set("sort", value);
+    }
+
+    const queryString = params.toString();
+
+    router.replace(queryString ? `${pathname}?${queryString}` : pathname, {
+      scroll: false,
+    });
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" size={"icon"}>
+        <Button variant="ghost" size="icon" aria-label="Sort notes">
           <ArrowUpDown className="text-primary" />
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent className="w-fit">
-        <DropdownMenuLabel>Sort Notes</DropdownMenuLabel>
+        <DropdownMenuLabel>Sort notes</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuRadioGroup value={sortBy} onValueChange={setSortBy}>
-          <DropdownMenuRadioItem className="flex gap-2" value="default">
-            <ChevronsUpDown className="h-4 w-4" />
-            Default
+
+        <DropdownMenuRadioGroup
+          value={initialSort}
+          onValueChange={handleSortChange}
+        >
+          <DropdownMenuRadioItem value="updated-desc">
+            <ClockArrowDown className="mr-2 h-4 w-4" />
+            Recently updated
           </DropdownMenuRadioItem>
 
-          <DropdownMenuRadioItem className="flex gap-2" value="title">
-            <CaseSensitive className="h-4 w-4" />
-            Title
+          <DropdownMenuRadioItem value="updated-asc">
+            <ClockArrowUp className="mr-2 h-4 w-4" />
+            Least recently updated
           </DropdownMenuRadioItem>
 
-          <DropdownMenuRadioItem className="flex gap-2" value="updated_at">
-            <Calendar className="h-4 w-4" />
-            Date
+          <DropdownMenuRadioItem value="title-asc">
+            <ArrowDownAZ className="mr-2 h-4 w-4" />
+            Title A–Z
+          </DropdownMenuRadioItem>
+
+          <DropdownMenuRadioItem value="title-desc">
+            <ArrowUpAZ className="mr-2 h-4 w-4" />
+            Title Z–A
+          </DropdownMenuRadioItem>
+
+          <DropdownMenuRadioItem value="created-desc">
+            <CalendarArrowDown className="mr-2 h-4 w-4" />
+            Newest created
+          </DropdownMenuRadioItem>
+
+          <DropdownMenuRadioItem value="created-asc">
+            <CalendarArrowUp className="mr-2 h-4 w-4" />
+            Oldest created
           </DropdownMenuRadioItem>
         </DropdownMenuRadioGroup>
-
-        {sortBy === "updated_at" && (
-          <DropdownMenuRadioGroup value={date} onValueChange={setDate}>
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioItem className="flex gap-2" value="DESC">
-              <Sunset className="h-4 w-4" />
-              Newest
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem className="flex gap-2" value="ASC">
-              <Clock className="h-4 w-4" />
-              Oldest
-            </DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        )}
-
-        {sortBy === "title" && (
-          <DropdownMenuRadioGroup value={title} onValueChange={setTitle}>
-            {" "}
-            <DropdownMenuSeparator />
-            <DropdownMenuRadioItem className="flex gap-2" value="ASC">
-              <SortAsc className="h-4 w-4" />
-              Asc
-            </DropdownMenuRadioItem>
-            <DropdownMenuRadioItem className="flex gap-2" value="DESC">
-              <SortDesc className="h-4 w-4" />
-              Desc
-            </DropdownMenuRadioItem>
-          </DropdownMenuRadioGroup>
-        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

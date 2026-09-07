@@ -5,8 +5,15 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import Notes from "@/components/Notes";
 import { Suspense } from "react";
+import {
+  DEFAULT_NOTE_SORT,
+  isNoteSort,
+  NOTE_SORT_OPTIONS,
+  type NoteSort,
+} from "@/lib/note-sort";
+import SortFilter from "@/components/SortFilter";
 
-const getNotes = async (userId: string, query: string) => {
+const getNotes = async (userId: string, query: string, sort: NoteSort) => {
   const notes = await prisma.note.findMany({
     where: {
       userId,
@@ -23,9 +30,7 @@ const getNotes = async (userId: string, query: string) => {
           }
         : {}),
     },
-    orderBy: {
-      updatedAt: "desc",
-    },
+    orderBy: NOTE_SORT_OPTIONS[sort],
   });
 
   return notes.map((note) => {
@@ -45,6 +50,7 @@ const getNotes = async (userId: string, query: string) => {
 type Props = {
   searchParams: Promise<{
     q?: string | string[];
+    sort?: string | string[];
   }>;
 };
 
@@ -55,16 +61,25 @@ const NotesPage = async ({ searchParams }: Props) => {
     redirect("/auth/sign-in");
   }
 
-  const { q } = await searchParams;
+  const { q, sort } = await searchParams;
   const query = typeof q === "string" ? q.trim() : "";
-  const notes = await getNotes(userId, query);
+  const selectedSort = isNoteSort(sort) ? sort : DEFAULT_NOTE_SORT;
+  const notes = await getNotes(userId, query, selectedSort);
 
   return (
     <div className="container mx-auto mt-4 rounded-md h-auto">
       <div className="my-2 flex-col md:flex w-full h-auto gap-4 ">
-        <Suspense fallback={null}>
-          <SearchNotes initialQuery={query} />
-        </Suspense>
+        <div className="flex items-center gap-2">
+          <div className="flex-1">
+            <Suspense fallback={null}>
+              <SearchNotes initialQuery={query} />
+            </Suspense>
+          </div>
+
+          <Suspense fallback={null}>
+            <SortFilter initialSort={selectedSort} />
+          </Suspense>
+        </div>
         <p className="text-sm text-muted-foreground ">
           {notes.length} {notes.length === 1 ? "note" : "notes"} found
         </p>
